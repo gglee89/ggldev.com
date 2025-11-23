@@ -115,6 +115,17 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
                 )
             )
         }
+
+        if (
+            storiesWebsiteIconRef.current &&
+            !storiesWebsiteIconRef.current.contains(event.target as Node)
+        ) {
+            setSelectedIcons((prevSelection) =>
+                prevSelection.filter(
+                    (selection) => selection !== DesktopIconTypes.StoriesWebsite
+                )
+            )
+        }
     }
 
     React.useEffect(() => {
@@ -193,6 +204,10 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
                 >
                     <img src={icons['notebook']} alt="notebook" />
                     <div>About Me</div>
+                    <div className="subtext">
+                        <div>v0.1 (ViteJS)</div>
+                        <div>(AWS CloudFront)</div>
+                    </div>
                 </div>
                 <div
                     ref={moviePlatformIconRef}
@@ -206,6 +221,10 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
                 >
                     <img src={icons['movie']} alt="movie" />
                     <div>Movie DB</div>
+                    <div className="subtext">
+                        <div>v0.1 (ViteJS)</div>
+                        <div>(AWS CloudFront)</div>
+                    </div>
                 </div>
                 <div
                     ref={storiesWebsiteIconRef}
@@ -219,6 +238,10 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
                 >
                     <img src={icons['explore']} alt="stories" />
                     <div>Stories</div>
+                    <div className="subtext">
+                        <div>v0.1 (NextJS)</div>
+                        <div>(Vercel)</div>
+                    </div>
                 </div>
             </div>
         </div>

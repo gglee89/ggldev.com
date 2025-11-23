@@ -181,7 +181,7 @@ const Preferences: React.FC<PreferencesProps> = ({
                 onMouseDown={handleMouseDown}
             >
                 <TopBar
-                    title="About Me"
+                    title="https://ggldev.com"
                     closeFinder={onClose}
                     requestFullScreen={
                         handle.active ? handle.exit : handle.enter
