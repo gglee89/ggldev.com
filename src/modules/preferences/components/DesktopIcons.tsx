@@ -11,16 +11,19 @@ interface Position {
 interface DesktopIconsProps {
     onAboutMeClick: () => void
     onMovieClick: () => void
+    onStoriesWebsiteClick: () => void
     isFinderOpen: boolean
 }
 
 const DesktopIcons: React.FC<DesktopIconsProps> = ({
     onAboutMeClick,
     onMovieClick,
+    onStoriesWebsiteClick,
     isFinderOpen,
 }) => {
     const iconRef = useRef<HTMLDivElement>(null)
     const moviePlatformIconRef = useRef<HTMLDivElement>(null)
+    const storiesWebsiteIconRef = useRef<HTMLDivElement>(null)
     const [selectedIcons, setSelectedIcons] = useState<string[]>([])
     const [isDragging, setIsDragging] = useState(false)
     const [position, setPosition] = useState<Position>({
@@ -145,6 +148,18 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
         }
     }
 
+    const clickStoriesWebsite: MouseEventHandler<HTMLDivElement> = (e) => {
+        e.preventDefault()
+        if (e.detail === 1) {
+            setSelectedIcons((prevSelection) => [
+                ...prevSelection,
+                DesktopIconTypes.StoriesWebsite,
+            ])
+        } else if (e.detail === 2) {
+            onStoriesWebsiteClick()
+        }
+    }
+
     return (
         <div
             className="desktop-icon-containers"
@@ -191,6 +206,19 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
                 >
                     <img src={icons['movie']} alt="movie" />
                     <div>Movie DB</div>
+                </div>
+                <div
+                    ref={storiesWebsiteIconRef}
+                    onClick={clickStoriesWebsite}
+                    className={classnames({
+                        'desktop-icon': true,
+                        'is-selected': selectedIcons.includes(
+                            DesktopIconTypes.StoriesWebsite
+                        ),
+                    })}
+                >
+                    <img src={icons['explore']} alt="stories" />
+                    <div>Stories</div>
                 </div>
             </div>
         </div>

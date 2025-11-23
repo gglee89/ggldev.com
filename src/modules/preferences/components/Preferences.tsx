@@ -1,17 +1,6 @@
-import React, {
-    useState,
-    useEffect,
-    useRef,
-    Suspense,
-    MouseEventHandler,
-    useCallback,
-} from 'react'
+import React, { useState, useEffect, Suspense, useCallback } from 'react'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import classnames from 'classnames'
-import { DesktopIcons, MOVIE_PLATFORM_LINK } from './constants'
-
-// Assets
-import icons from 'shared/icons'
 
 // @MUI
 import { LinearProgress } from '@mui/material'
@@ -35,7 +24,6 @@ interface Position {
 }
 
 interface PreferencesProps {
-    onMovieClick: () => void
     zIndex: number
     onFocus: () => void
     isOpen: boolean
@@ -62,17 +50,11 @@ const Attribution = React.lazy(
 const Posts = React.lazy(() => import('modules/posts/components/Posts'))
 
 const Preferences: React.FC<PreferencesProps> = ({
-    onMovieClick,
     zIndex,
     onFocus,
     isOpen,
     onClose,
 }) => {
-    const iconRef = useRef<HTMLDivElement>(null)
-    const viteIconRef = useRef<HTMLDivElement>(null)
-    const moviePlatformIconRef = useRef<HTMLDivElement>(null)
-    const [isFinderOpen, setIsFinderOpen] = useState(true)
-    const [selectedIcons, setSelectedIcons] = useState<string[]>([])
     const [isDragging, setIsDragging] = useState(false)
     const [position, setPosition] = useState<Position>({
         x: window.innerWidth / 2 - 570,
@@ -80,73 +62,10 @@ const Preferences: React.FC<PreferencesProps> = ({
     })
     const [dragStart, setDragStart] = useState<Position>({ x: 0, y: 0 })
     const handle = useFullScreenHandle()
-
+    const [haveDragged, setHaveDragged] = useState(false)
     const dispatch = useAppDispatch()
     const projectName = useAppSelector(getProjectName)
     const selectedMenu = useAppSelector(getSelectedMenu)
-
-    const clickAboutMe: MouseEventHandler<HTMLDivElement> = (e) => {
-        e.preventDefault()
-        if (e.detail === 1) {
-            setSelectedIcons((prevSelection) => [
-                ...prevSelection,
-                DesktopIcons.AboutMe,
-            ])
-        } else if (e.detail === 2) {
-            setIsFinderOpen(true)
-        }
-    }
-
-    const clickMoviePlatform: MouseEventHandler<HTMLDivElement> = (e) => {
-        e.preventDefault()
-        if (e.detail === 1) {
-            setSelectedIcons((prevSelection) => [
-                ...prevSelection,
-                DesktopIcons.MoviePlatform,
-            ])
-        } else if (e.detail === 2) {
-            onMovieClick()
-        }
-    }
-
-    const handleClickIcon = (event: MouseEvent) => {
-        if (
-            iconRef.current &&
-            !iconRef.current.contains(event.target as Node)
-        ) {
-            setSelectedIcons((prevSelection) =>
-                prevSelection.filter(
-                    (selection) => selection !== DesktopIcons.AboutMe
-                )
-            )
-        }
-
-        if (
-            viteIconRef.current &&
-            !viteIconRef.current.contains(event.target as Node)
-        ) {
-            setSelectedIcons((prevSelection) =>
-                prevSelection.filter(
-                    (selection) => selection !== DesktopIcons.ViteWebsite
-                )
-            )
-        }
-
-        if (
-            moviePlatformIconRef.current &&
-            !moviePlatformIconRef.current.contains(event.target as Node)
-        ) {
-            setSelectedIcons((prevSelection) =>
-                prevSelection.filter(
-                    (selection) => selection !== DesktopIcons.MoviePlatform
-                )
-            )
-        }
-    }
-
-    const handleCloseFinder = () => {
-        setIsFinderOpen(false)
-    }
 
     const handleMouseDown = (e: React.MouseEvent) => {
         if (
@@ -155,10 +74,29 @@ const Preferences: React.FC<PreferencesProps> = ({
             !e.target.closest('.window-control')
         ) {
             setIsDragging(true)
+
+            // Get the actual current position of the element
+            const rect = (
+                e.currentTarget as HTMLElement
+            ).getBoundingClientRect()
+            const currentX = rect.left
+            const currentY = rect.top
+
+            // If this is the first drag, update position to match actual position
+            if (!haveDragged) {
+                setPosition({
+                    x: currentX,
+                    y: currentY,
+                })
+                setHaveDragged(true)
+            }
+
+            // Calculate dragStart based on actual current position
             setDragStart({
-                x: e.clientX - position.x,
-                y: e.clientY - position.y,
+                x: e.clientX - currentX,
+                y: e.clientY - currentY,
             })
+
             onFocus()
             e.preventDefault()
         }
@@ -185,13 +123,6 @@ const Preferences: React.FC<PreferencesProps> = ({
 
     const handleMouseUp = useCallback(() => {
         setIsDragging(false)
-    }, [])
-
-    useEffect(() => {
-        document.addEventListener('mousedown', handleClickIcon)
-        return () => {
-            document.removeEventListener('mousedown', handleClickIcon)
-        }
     }, [])
 
     useEffect(() => {
@@ -229,8 +160,20 @@ const Preferences: React.FC<PreferencesProps> = ({
                 className={preferencesContainerClasses}
                 style={{
                     position: 'fixed',
-                    left: handle.active ? '0' : `${position.x}px`,
-                    top: handle.active ? '0' : `${position.y}px`,
+                    left: handle.active
+                        ? '0'
+                        : haveDragged
+                        ? `${position.x}px`
+                        : '50%',
+                    top: handle.active
+                        ? '0'
+                        : haveDragged
+                        ? `${position.y}px`
+                        : '50%',
+                    transform:
+                        handle.active || haveDragged
+                            ? 'none'
+                            : 'translate(-50%, -50%)',
                     cursor: isDragging ? 'grabbing' : 'default',
                     transition: isDragging ? 'none' : 'all 0.3s ease',
                     zIndex,

@@ -11,6 +11,7 @@ import DesktopIcons from 'modules/preferences/components/DesktopIcons'
 
 // Images
 import backgrounds from 'shared/backgrounds'
+import StoriesWebsiteIframe from 'modules/preferences/components/StoriesWebsiteIFrame'
 
 const BACKGROUND_IMAGE_INDEX = 'bg1'
 
@@ -18,6 +19,7 @@ const BACKGROUND_IMAGE_INDEX = 'bg1'
 const WINDOW_TYPES = {
     PREFERENCES: 'preferences',
     MOVIE_IFRAME: 'movieIframe',
+    STORIES_WEBSITE_IFRAME: 'storiesWebsiteIframe',
     WEB_VITALS: 'webVitals',
 } as const
 
@@ -27,6 +29,7 @@ const BASE_Z_INDEX = 1000
 
 const Home = () => {
     const [showMovieIframe, setShowMovieIframe] = useState(false)
+    const [showStoriesWebsite, setShowStoriesWebsite] = useState(false)
     const [isFinderOpen, setIsFinderOpen] = useState(true)
     const [focusedWindow, setFocusedWindow] = useState<WindowType>(
         WINDOW_TYPES.PREFERENCES
@@ -51,10 +54,10 @@ const Home = () => {
             <DesktopIcons
                 onAboutMeClick={() => setIsFinderOpen(true)}
                 onMovieClick={() => setShowMovieIframe(true)}
+                onStoriesWebsiteClick={() => setShowStoriesWebsite(true)}
                 isFinderOpen={isFinderOpen}
             />
             <Preferences
-                onMovieClick={() => setShowMovieIframe(true)}
                 zIndex={getZIndex(WINDOW_TYPES.PREFERENCES)}
                 onFocus={() => handleWindowFocus(WINDOW_TYPES.PREFERENCES)}
                 isOpen={isFinderOpen}
@@ -62,9 +65,20 @@ const Home = () => {
             />
             {showMovieIframe && (
                 <MovieIframe
-                    onClose={() => setShowMovieIframe(false)}
+                    onClose={() => {
+                        setShowMovieIframe(false)
+                    }}
                     zIndex={getZIndex(WINDOW_TYPES.MOVIE_IFRAME)}
                     onFocus={() => handleWindowFocus(WINDOW_TYPES.MOVIE_IFRAME)}
+                />
+            )}
+            {showStoriesWebsite && (
+                <StoriesWebsiteIframe
+                    onClose={() => setShowStoriesWebsite(false)}
+                    zIndex={getZIndex(WINDOW_TYPES.STORIES_WEBSITE_IFRAME)}
+                    onFocus={() =>
+                        handleWindowFocus(WINDOW_TYPES.STORIES_WEBSITE_IFRAME)
+                    }
                 />
             )}
             <WebVitalsReport

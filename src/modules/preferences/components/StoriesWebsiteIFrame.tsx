@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import classnames from 'classnames'
-import { FullScreen, useFullScreenHandle } from 'react-full-screen'
-import { MOVIE_PLATFORM_LINK } from './constants'
+import { useFullScreenHandle } from 'react-full-screen'
+import { STORIES_WEBSITE_LINK } from './constants'
 import TopBar from './TopBar'
 
 interface Position {
@@ -9,25 +9,26 @@ interface Position {
     y: number
 }
 
-interface MovieIframeProps {
+interface StoriesWebsiteIframeProps {
     onClose: () => void
     zIndex: number
     onFocus: () => void
 }
 
-const MovieIframe: React.FC<MovieIframeProps> = ({
+const StoriesWebsiteIframe: React.FC<StoriesWebsiteIframeProps> = ({
     onClose,
     zIndex,
     onFocus,
 }) => {
     const handle = useFullScreenHandle()
+    const [haveDragged, setHaveDragged] = useState(false)
     const [isDragging, setIsDragging] = useState(false)
     const [position, setPosition] = useState<Position>({
         x: window.innerWidth / 2 - 570,
         y: window.innerHeight / 2 - 300,
     })
     const [dragStart, setDragStart] = useState<Position>({ x: 0, y: 0 })
-    const [haveDragged, setHaveDragged] = useState(false)
+
     const handleMouseDown = (e: React.MouseEvent) => {
         if (
             e.target instanceof HTMLElement &&
@@ -108,67 +109,63 @@ const MovieIframe: React.FC<MovieIframeProps> = ({
     }, [isDragging, handleMouseMove, handleMouseUp])
 
     return (
-        <FullScreen handle={handle}>
+        <div
+            className={classnames({
+                container: true,
+                'preferences-container': true,
+                'is-open': true,
+            })}
+            style={{
+                position: 'fixed',
+                left: handle.active
+                    ? '0'
+                    : haveDragged
+                    ? `${position.x}px`
+                    : '50%',
+                top: handle.active
+                    ? '0'
+                    : haveDragged
+                    ? `${position.y}px`
+                    : '50%',
+                transform:
+                    handle.active || haveDragged
+                        ? 'none'
+                        : 'translate(-50%, -50%)',
+                cursor: isDragging ? 'grabbing' : 'default',
+                transition: isDragging ? 'none' : 'all 0.3s ease',
+                zIndex,
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+            onMouseDown={handleMouseDown}
+        >
+            <TopBar
+                title="Stories"
+                closeFinder={onClose}
+                requestFullScreen={handle.active ? handle.exit : handle.enter}
+            />
             <div
-                className={classnames({
-                    container: true,
-                    'preferences-container': true,
-                    'is-open': true,
-                })}
+                className="preferences-menu"
                 style={{
-                    position: 'fixed',
-                    left: handle.active
-                        ? '0'
-                        : haveDragged
-                        ? `${position.x}px`
-                        : '50%',
-                    top: handle.active
-                        ? '0'
-                        : haveDragged
-                        ? `${position.y}px`
-                        : '50%',
-                    transform:
-                        handle.active || haveDragged
-                            ? 'none'
-                            : 'translate(-50%, -50%)',
-                    cursor: isDragging ? 'grabbing' : 'default',
-                    transition: isDragging ? 'none' : 'all 0.3s ease',
-                    zIndex,
+                    flex: 1,
+                    minHeight: 0,
                     display: 'flex',
                     flexDirection: 'column',
                 }}
-                onMouseDown={handleMouseDown}
             >
-                <TopBar
-                    title="Movie Platform"
-                    closeFinder={onClose}
-                    requestFullScreen={
-                        handle.active ? handle.exit : handle.enter
-                    }
-                />
-                <div
-                    className="preferences-menu"
+                <iframe
+                    src={STORIES_WEBSITE_LINK}
                     style={{
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
                         flex: 1,
-                        minHeight: 0,
-                        display: 'flex',
-                        flexDirection: 'column',
                     }}
-                >
-                    <iframe
-                        src={MOVIE_PLATFORM_LINK}
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            border: 'none',
-                            flex: 1,
-                        }}
-                        title="Movie Platform"
-                    />
-                </div>
+                    title="Stories"
+                />
             </div>
-        </FullScreen>
+        </div>
     )
 }
 
-export default MovieIframe
+export default StoriesWebsiteIframe

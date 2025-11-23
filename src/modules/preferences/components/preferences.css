@@ -132,7 +132,7 @@
 
     position: absolute;
     top: 100px;
-    width: 540px;
+    max-width: 540px;
 }
 
 .desktop-icon-menu > div {
