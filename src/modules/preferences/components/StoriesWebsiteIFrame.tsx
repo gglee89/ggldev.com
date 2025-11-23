@@ -140,7 +140,7 @@ const StoriesWebsiteIframe: React.FC<StoriesWebsiteIframeProps> = ({
             onMouseDown={handleMouseDown}
         >
             <TopBar
-                title="Stories"
+                title="https://stories.ggldev.com"
                 closeFinder={onClose}
                 requestFullScreen={handle.active ? handle.exit : handle.enter}
             />

@@ -140,7 +140,7 @@ const MovieIframe: React.FC<MovieIframeProps> = ({
                 onMouseDown={handleMouseDown}
             >
                 <TopBar
-                    title="Movie Platform"
+                    title="https://platform.ggldev.com"
                     closeFinder={onClose}
                     requestFullScreen={
                         handle.active ? handle.exit : handle.enter
