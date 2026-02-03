@@ -1,13 +1,9 @@
-import React, { useState, useCallback } from 'react'
+import React from 'react'
 import classnames from 'classnames'
 import { useFullScreenHandle } from 'react-full-screen'
 import { STORIES_WEBSITE_LINK } from './constants'
 import TopBar from './TopBar'
-
-interface Position {
-    x: number
-    y: number
-}
+import { useDraggable } from 'hooks/useDraggable'
 
 interface StoriesWebsiteIframeProps {
     onClose: () => void
@@ -21,92 +17,16 @@ const StoriesWebsiteIframe: React.FC<StoriesWebsiteIframeProps> = ({
     onFocus,
 }) => {
     const handle = useFullScreenHandle()
-    const [haveDragged, setHaveDragged] = useState(false)
-    const [isDragging, setIsDragging] = useState(false)
-    const [position, setPosition] = useState<Position>({
-        x: window.innerWidth / 2 - 570,
-        y: window.innerHeight / 2 - 300,
+
+    const { isDragging, handleMouseDown, dragStyle } = useDraggable({
+        initialPosition: { x: 0, y: 0 },
+        disabled: handle.active,
+        onFocus,
+        bounds: { right: 570, bottom: 100 },
+        dragHandleSelector: '.topbar-container',
+        excludeSelectors: ['.window-control'],
+        initialCentered: true,
     })
-    const [dragStart, setDragStart] = useState<Position>({ x: 0, y: 0 })
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        if (
-            e.target instanceof HTMLElement &&
-            e.target.closest('.topbar-container') &&
-            !e.target.closest('.window-control')
-        ) {
-            setIsDragging(true)
-            // Get the actual current position of the element
-            const rect = (
-                e.currentTarget as HTMLElement
-            ).getBoundingClientRect()
-            const currentX = rect.left
-            const currentY = rect.top
-
-            // If this is the first drag, update position to match actual position
-            if (!haveDragged) {
-                setPosition({
-                    x: currentX,
-                    y: currentY,
-                })
-                setHaveDragged(true)
-            }
-
-            // Calculate dragStart based on actual current position
-            setDragStart({
-                x: e.clientX - currentX,
-                y: e.clientY - currentY,
-            })
-            onFocus()
-            e.preventDefault()
-        }
-    }
-
-    const handleMouseMove = useCallback(
-        (e: globalThis.MouseEvent) => {
-            if (isDragging && !handle.active) {
-                const newX = e.clientX - dragStart.x
-                const newY = e.clientY - dragStart.y
-
-                // Keep the window within viewport bounds
-                const maxX = window.innerWidth - 570
-                const maxY = window.innerHeight - 100
-
-                setPosition({
-                    x: Math.max(0, Math.min(newX, maxX)),
-                    y: Math.max(0, Math.min(newY, maxY)),
-                })
-            }
-        },
-        [isDragging, dragStart, handle.active]
-    )
-
-    const handleMouseUp = useCallback(() => {
-        setIsDragging(false)
-    }, [])
-
-    React.useEffect(() => {
-        if (isDragging) {
-            document.addEventListener(
-                'mousemove',
-                handleMouseMove as EventListener
-            )
-            document.addEventListener('mouseup', handleMouseUp as EventListener)
-            document.body.style.cursor = 'grabbing'
-
-            return () => {
-                document.removeEventListener(
-                    'mousemove',
-                    handleMouseMove as EventListener
-                )
-                document.removeEventListener(
-                    'mouseup',
-                    handleMouseUp as EventListener
-                )
-                document.body.style.cursor = ''
-            }
-        }
-    }, [isDragging, handleMouseMove, handleMouseUp])
 
     return (
         <div
@@ -116,23 +36,12 @@ const StoriesWebsiteIframe: React.FC<StoriesWebsiteIframeProps> = ({
                 'is-open': true,
             })}
             style={{
-                position: 'fixed',
-                left: handle.active
-                    ? '0'
-                    : haveDragged
-                    ? `${position.x}px`
-                    : '50%',
-                top: handle.active
-                    ? '0'
-                    : haveDragged
-                    ? `${position.y}px`
-                    : '50%',
-                transform:
-                    handle.active || haveDragged
-                        ? 'none'
-                        : 'translate(-50%, -50%)',
-                cursor: isDragging ? 'grabbing' : 'default',
-                transition: isDragging ? 'none' : 'all 0.3s ease',
+                ...dragStyle,
+                ...(handle.active && {
+                    left: '0',
+                    top: '0',
+                    transform: 'none',
+                }),
                 zIndex,
                 display: 'flex',
                 flexDirection: 'column',

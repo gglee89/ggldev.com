@@ -1,12 +1,8 @@
-import React, { useRef, useState, MouseEventHandler, useCallback } from 'react'
+import React, { useRef, useState, MouseEventHandler } from 'react'
 import classnames from 'classnames'
 import { DesktopIcons as DesktopIconTypes } from './constants'
 import icons from 'shared/icons'
-
-interface Position {
-    x: number
-    y: number
-}
+import { useDraggable } from 'hooks/useDraggable'
 
 interface DesktopIconsProps {
     onAboutMeClick: () => void
@@ -25,73 +21,12 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
     const moviePlatformIconRef = useRef<HTMLDivElement>(null)
     const storiesWebsiteIconRef = useRef<HTMLDivElement>(null)
     const [selectedIcons, setSelectedIcons] = useState<string[]>([])
-    const [isDragging, setIsDragging] = useState(false)
-    const [position, setPosition] = useState<Position>({
-        x: 50,
-        y: 100,
+
+    const { isDragging, handleMouseDown, dragStyle } = useDraggable({
+        initialPosition: { x: 50, y: 100 },
+        bounds: { right: 540, bottom: 200 },
+        initialCentered: false,
     })
-    const [dragStart, setDragStart] = useState<Position>({ x: 0, y: 0 })
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        if (
-            e.target instanceof HTMLElement &&
-            e.target.closest('.topbar-container') &&
-            !e.target.closest('.title')
-        ) {
-            setIsDragging(true)
-            setDragStart({
-                x: e.clientX - position.x,
-                y: e.clientY - position.y,
-            })
-            e.preventDefault()
-        }
-    }
-
-    const handleMouseMove = useCallback(
-        (e: globalThis.MouseEvent) => {
-            if (isDragging) {
-                const newX = e.clientX - dragStart.x
-                const newY = e.clientY - dragStart.y
-
-                // Keep the container within viewport bounds
-                const maxX = window.innerWidth - 540
-                const maxY = window.innerHeight - 200
-
-                setPosition({
-                    x: Math.max(0, Math.min(newX, maxX)),
-                    y: Math.max(0, Math.min(newY, maxY)),
-                })
-            }
-        },
-        [isDragging, dragStart]
-    )
-
-    const handleMouseUp = useCallback(() => {
-        setIsDragging(false)
-    }, [])
-
-    React.useEffect(() => {
-        if (isDragging) {
-            document.addEventListener(
-                'mousemove',
-                handleMouseMove as EventListener
-            )
-            document.addEventListener('mouseup', handleMouseUp as EventListener)
-            document.body.style.cursor = 'grabbing'
-
-            return () => {
-                document.removeEventListener(
-                    'mousemove',
-                    handleMouseMove as EventListener
-                )
-                document.removeEventListener(
-                    'mouseup',
-                    handleMouseUp as EventListener
-                )
-                document.body.style.cursor = ''
-            }
-        }
-    }, [isDragging, handleMouseMove, handleMouseUp])
 
     const handleClickIcon = (event: MouseEvent) => {
         if (
@@ -174,20 +109,15 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
     return (
         <div
             className="desktop-icon-containers"
-            style={{
-                position: 'fixed',
-                left: `${position.x}px`,
-                top: `${position.y}px`,
-                cursor: isDragging ? 'grabbing' : 'default',
-                transition: isDragging ? 'none' : 'all 0.3s ease',
-            }}
-            onMouseDown={handleMouseDown}
+            style={dragStyle}
         >
             <div
                 className="topbar-container"
                 style={{
                     cursor: isDragging ? 'grabbing' : 'grab',
+                    userSelect: 'none',
                 }}
+                onMouseDown={handleMouseDown}
             >
                 <div className="title">Home directory</div>
             </div>

@@ -24,7 +24,8 @@ const Posts: React.FC = () => {
     const { data: topStoriesIds } = useGetTopStories()
     const top10stories = (topStoriesIds ?? []).slice(0, 10)
     const { data: items } = useGetItems(top10stories.map((id) => String(id)))
-    const sortedItems = items.sort((a, b) => a.time - b.time)
+    // Create a new sorted array to avoid mutating the original
+    const sortedItems = [...items].sort((a, b) => a.time - b.time)
 
     return (
         <div className="posts-container">

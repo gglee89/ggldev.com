@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, useCallback } from 'react'
+import React, { Suspense } from 'react'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import classnames from 'classnames'
 
@@ -12,16 +12,14 @@ import './preferences.css'
 import TopBar from './TopBar'
 import TopNavigationMenu from './TopNavigationMenu'
 
+// Hooks
+import { useDraggable } from 'hooks/useDraggable'
+
 // Selectors
 import { useAppDispatch, useAppSelector } from 'store'
 import { getProjectName } from 'modules/projects/slice'
 import { getSelectedMenu, selectMenu } from 'modules/preferences/slice'
 import { MENU_ITEMS, menuOptions } from '../constants'
-
-interface Position {
-    x: number
-    y: number
-}
 
 interface PreferencesProps {
     zIndex: number
@@ -55,98 +53,20 @@ const Preferences: React.FC<PreferencesProps> = ({
     isOpen,
     onClose,
 }) => {
-    const [isDragging, setIsDragging] = useState(false)
-    const [position, setPosition] = useState<Position>({
-        x: window.innerWidth / 2 - 570,
-        y: window.innerHeight / 2 - 300,
-    })
-    const [dragStart, setDragStart] = useState<Position>({ x: 0, y: 0 })
     const handle = useFullScreenHandle()
-    const [haveDragged, setHaveDragged] = useState(false)
     const dispatch = useAppDispatch()
     const projectName = useAppSelector(getProjectName)
     const selectedMenu = useAppSelector(getSelectedMenu)
 
-    const handleMouseDown = (e: React.MouseEvent) => {
-        if (
-            e.target instanceof HTMLElement &&
-            e.target.closest('.topbar-container') &&
-            !e.target.closest('.window-control')
-        ) {
-            setIsDragging(true)
-
-            // Get the actual current position of the element
-            const rect = (
-                e.currentTarget as HTMLElement
-            ).getBoundingClientRect()
-            const currentX = rect.left
-            const currentY = rect.top
-
-            // If this is the first drag, update position to match actual position
-            if (!haveDragged) {
-                setPosition({
-                    x: currentX,
-                    y: currentY,
-                })
-                setHaveDragged(true)
-            }
-
-            // Calculate dragStart based on actual current position
-            setDragStart({
-                x: e.clientX - currentX,
-                y: e.clientY - currentY,
-            })
-
-            onFocus()
-            e.preventDefault()
-        }
-    }
-
-    const handleMouseMove = useCallback(
-        (e: globalThis.MouseEvent) => {
-            if (isDragging && !handle.active) {
-                const newX = e.clientX - dragStart.x
-                const newY = e.clientY - dragStart.y
-
-                // Keep the window within viewport bounds
-                const maxX = window.innerWidth - 570
-                const maxY = window.innerHeight - 100
-
-                setPosition({
-                    x: Math.max(0, Math.min(newX, maxX)),
-                    y: Math.max(0, Math.min(newY, maxY)),
-                })
-            }
-        },
-        [isDragging, dragStart, handle.active]
-    )
-
-    const handleMouseUp = useCallback(() => {
-        setIsDragging(false)
-    }, [])
-
-    useEffect(() => {
-        if (isDragging) {
-            document.addEventListener(
-                'mousemove',
-                handleMouseMove as EventListener
-            )
-            document.addEventListener('mouseup', handleMouseUp as EventListener)
-            document.body.style.cursor = 'grabbing'
-
-            return () => {
-                document.removeEventListener(
-                    'mousemove',
-                    handleMouseMove as EventListener
-                )
-                document.removeEventListener(
-                    'mouseup',
-                    handleMouseUp as EventListener
-                )
-                document.body.style.cursor = ''
-            }
-        }
-    }, [isDragging, handleMouseMove, handleMouseUp])
+    const { isDragging, haveDragged, handleMouseDown, dragStyle } = useDraggable({
+        initialPosition: { x: 0, y: 0 },
+        disabled: handle.active,
+        onFocus,
+        bounds: { right: 570, bottom: 100 },
+        dragHandleSelector: '.topbar-container',
+        excludeSelectors: ['.window-control'],
+        initialCentered: true,
+    })
 
     const preferencesContainerClasses = classnames({
         container: true,
@@ -159,23 +79,13 @@ const Preferences: React.FC<PreferencesProps> = ({
             <div
                 className={preferencesContainerClasses}
                 style={{
-                    position: 'fixed',
-                    left: handle.active
-                        ? '0'
-                        : haveDragged
-                        ? `${position.x}px`
-                        : '50%',
-                    top: handle.active
-                        ? '0'
-                        : haveDragged
-                        ? `${position.y}px`
-                        : '50%',
-                    transform:
-                        handle.active || haveDragged
-                            ? 'none'
-                            : 'translate(-50%, -50%)',
-                    cursor: isDragging ? 'grabbing' : 'default',
-                    transition: isDragging ? 'none' : 'all 0.3s ease',
+                    ...dragStyle,
+                    // Override for fullscreen mode
+                    ...(handle.active && {
+                        left: '0',
+                        top: '0',
+                        transform: 'none',
+                    }),
                     zIndex,
                 }}
                 onMouseDown={handleMouseDown}

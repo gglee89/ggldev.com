@@ -1,16 +1,12 @@
-import React, { useState, useEffect, useCallback, MouseEvent } from 'react'
+import React, { useState, useEffect } from 'react'
 import { onCLS, onFID, onLCP, onFCP, onTTFB } from 'web-vitals'
 import { useFullScreenHandle } from 'react-full-screen'
+import { useDraggable } from 'hooks/useDraggable'
 
 interface Metric {
     name: string
     value: number
     rating: 'good' | 'needs-improvement' | 'poor'
-}
-
-interface Position {
-    x: number
-    y: number
 }
 
 interface WebVitalsReportProps {
@@ -25,14 +21,16 @@ const WebVitalsReport: React.FC<WebVitalsReportProps> = ({
     const handle = useFullScreenHandle()
     const [metrics, setMetrics] = useState<Metric[]>([])
     const [isCollapsed, setIsCollapsed] = useState(false)
-    const [isDragging, setIsDragging] = useState(false)
-    const [position, setPosition] = useState<Position>({
-        x: 20,
-        y: window.innerHeight - 200,
-    })
-    const [dragStart, setDragStart] = useState<Position>({ x: 0, y: 0 })
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
-    const [isDragIntent, setIsDragIntent] = useState(false)
+
+    const { isDragging, isDragIntent, handleMouseDown, dragStyle } = useDraggable({
+        initialPosition: { x: 20, y: typeof window !== 'undefined' ? window.innerHeight - 200 : 200 },
+        disabled: handle.active,
+        onFocus,
+        bounds: { right: 200, bottom: 100 },
+        dragHandleSelector: '.drag-handle',
+        initialCentered: false,
+    })
 
     useEffect(() => {
         const getRating = (
@@ -137,76 +135,7 @@ const WebVitalsReport: React.FC<WebVitalsReportProps> = ({
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${timezone}`
     }
 
-    const handleMouseDown = (e: React.MouseEvent) => {
-        if (
-            e.target instanceof HTMLElement &&
-            e.target.closest('.drag-handle')
-        ) {
-            setIsDragIntent(false)
-            setIsDragging(true)
-            setDragStart({
-                x: e.clientX - position.x,
-                y: e.clientY - position.y,
-            })
-            onFocus()
-            e.preventDefault()
-        }
-    }
-
-    const handleMouseMove = useCallback(
-        (e: globalThis.MouseEvent) => {
-            if (isDragging && !handle.active) {
-                // Set drag intent on first mouse move during drag
-                if (!isDragIntent) {
-                    setIsDragIntent(true)
-                }
-
-                const newX = e.clientX - dragStart.x
-                const newY = e.clientY - dragStart.y
-
-                // Keep the report within viewport bounds
-                const maxX = window.innerWidth - 200
-                const maxY = window.innerHeight - 100
-
-                setPosition({
-                    x: Math.max(0, Math.min(newX, maxX)),
-                    y: Math.max(0, Math.min(newY, maxY)),
-                })
-            }
-        },
-        [isDragging, dragStart, handle.active, position]
-    )
-
-    const handleMouseUp = useCallback(() => {
-        setIsDragging(false)
-    }, [])
-
-    useEffect(() => {
-        if (isDragging) {
-            document.addEventListener(
-                'mousemove',
-                handleMouseMove as EventListener
-            )
-            document.addEventListener('mouseup', handleMouseUp as EventListener)
-
-            // Add a cursor style to the body during dragging
-            document.body.style.cursor = 'grabbing'
-
-            return () => {
-                document.removeEventListener(
-                    'mousemove',
-                    handleMouseMove as EventListener
-                )
-                document.removeEventListener(
-                    'mouseup',
-                    handleMouseUp as EventListener
-                )
-                document.body.style.cursor = ''
-            }
-        }
-    }, [isDragging, handleMouseMove, handleMouseUp])
-
-    const handleHeaderClick = (e: React.MouseEvent) => {
+    const handleHeaderClick = () => {
         // Only toggle if it wasn't a drag operation
         if (!isDragIntent) {
             setIsCollapsed(!isCollapsed)
@@ -218,19 +147,19 @@ const WebVitalsReport: React.FC<WebVitalsReportProps> = ({
     return (
         <div
             style={{
-                position: 'fixed',
-                left: handle.active ? 'auto' : `${position.x}px`,
-                top: handle.active ? 'auto' : `${position.y}px`,
-                right: handle.active ? '20px' : 'auto',
-                bottom: handle.active ? '20px' : 'auto',
+                ...dragStyle,
+                ...(handle.active && {
+                    left: 'auto',
+                    top: 'auto',
+                    right: '20px',
+                    bottom: '20px',
+                }),
                 backgroundColor: '#1a1a1a',
                 borderRadius: '4px',
                 padding: '0',
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
                 zIndex,
                 width: '180px',
-                cursor: isDragging ? 'grabbing' : 'default',
-                transition: isDragging ? 'none' : 'all 0.3s ease',
                 userSelect: 'none',
                 fontSize: '12px',
             }}
