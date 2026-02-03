@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import './home.css'
 
@@ -8,12 +8,10 @@ import Preferences from 'modules/preferences/components/Preferences'
 import WebVitalsReport from 'modules/preferences/components/WebVitalsReport'
 import MovieIframe from 'modules/preferences/components/MovieIframe'
 import DesktopIcons from 'modules/preferences/components/DesktopIcons'
-
-// Images
-import backgrounds from 'shared/backgrounds'
 import StoriesWebsiteIframe from 'modules/preferences/components/StoriesWebsiteIFrame'
 
-const BACKGROUND_IMAGE_INDEX = 'bg1'
+// Components
+import BackgroundWrapper from 'components/BackgroundWrapper'
 
 // Window identifiers
 const WINDOW_TYPES = {
@@ -41,15 +39,10 @@ const Home = () => {
 
     const handleWindowFocus = (windowType: WindowType) => {
         setFocusedWindow(windowType)
-    }
+    }    
 
     return (
-        <div
-            className="Home"
-            style={{
-                backgroundImage: `url(${backgrounds[BACKGROUND_IMAGE_INDEX]})`,
-            }}
-        >
+        <BackgroundWrapper>
             <Header />
             <DesktopIcons
                 onAboutMeClick={() => setIsFinderOpen(true)}
@@ -85,7 +78,7 @@ const Home = () => {
                 zIndex={getZIndex(WINDOW_TYPES.WEB_VITALS)}
                 onFocus={() => handleWindowFocus(WINDOW_TYPES.WEB_VITALS)}
             />
-        </div>
+        </BackgroundWrapper>
     )
 }
 

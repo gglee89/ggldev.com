@@ -1,0 +1,29 @@
+.lazy-bg-container {
+    position: relative;
+    background-repeat: no-repeat;
+    transition: filter 0.5s ease-out;
+}
+
+.lazy-bg-container.is-loading {
+    /* Apply blur while loading */
+    filter: blur(0);
+}
+
+.lazy-bg-container.is-loaded {
+    filter: blur(0);
+}
+
+.lazy-bg-placeholder {
+    position: absolute;
+    inset: 0;
+    background-repeat: no-repeat;
+    filter: blur(20px);
+    transform: scale(1.1); /* Prevent blur edge artifacts */
+    transition: opacity 0.5s ease-out;
+    z-index: -1;
+}
+
+.lazy-bg-container.is-loaded .lazy-bg-placeholder {
+    opacity: 0;
+    pointer-events: none;
+}

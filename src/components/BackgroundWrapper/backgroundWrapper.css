@@ -1,0 +1,30 @@
+.background-wrapper {
+    position: relative;
+    transition: filter 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+/* Loading state - show placeholder background color */
+.background-wrapper.bg-loading {
+    background-color: #1a1a2e;
+}
+
+/* Loaded state */
+.background-wrapper.bg-loaded {
+    filter: none;
+}
+
+/* Blur placeholder overlay */
+.background-wrapper__placeholder {
+    position: absolute;
+    inset: 0;
+    background-repeat: no-repeat;
+    filter: blur(20px);
+    transform: scale(1.1); /* Prevent blur edge artifacts */
+    transition: opacity 0.4s ease-out;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.background-wrapper.bg-loaded .background-wrapper__placeholder {
+    opacity: 0;
+}
