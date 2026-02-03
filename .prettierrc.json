@@ -2,5 +2,20 @@
   "trailingComma": "es5",
   "tabWidth": 4,
   "semi": false,
-  "singleQuote": true
+  "singleQuote": true,
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^react$",
+    "^react-dom$",
+    "^react-(.*)$",
+    "^@reduxjs/(.*)$",
+    "^@tanstack/(.*)$",
+    "^@mui/(.*)$",
+    "^[a-z]",
+    "^@/(.*)$",
+    "^[.]{2}/(.*)$",
+    "^[.]/(.*)$"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

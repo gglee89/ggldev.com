@@ -1,6 +1,5 @@
 .side-menu-container {
   background-color: var(--light-gray);
-  border: 1px solid var(--gray);
   display: flex;
   flex: 1;
   flex-direction: column;

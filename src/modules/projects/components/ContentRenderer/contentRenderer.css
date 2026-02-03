@@ -1,6 +1,6 @@
 .renderer-container {
     background-color: var(--light-gray);
-    border: 1px solid var(--gray);
+    box-sizing: border-box;
     height: 100%;
     font-size: 13px;
     flex: 3;
