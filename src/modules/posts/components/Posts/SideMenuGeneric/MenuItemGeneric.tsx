@@ -2,7 +2,23 @@ import classNames from 'classnames'
 import React from 'react'
 
 import './menuItemGeneric.css'
-import moment from 'moment'
+
+/**
+ * Format Unix timestamp to readable date string
+ * Replaces moment.js (saves ~70KB)
+ */
+const formatUnixTime = (unixTimestamp: number): string => {
+    const date = new Date(unixTimestamp * 1000)
+    return new Intl.DateTimeFormat('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+    }).format(date)
+}
 
 interface MenuItemGenericProps {
     title: string
@@ -29,9 +45,7 @@ const MenuItemGeneric: React.FC<MenuItemGenericProps> = ({
             <div className="posts-side-menu-item-left">{score}</div>
             <div className="posts-side-menu-item-post">
                 <div>{title}</div>
-                <div className="date">
-                    {moment.unix(time).format('MM/DD/YYYY h:mm:ss A')}
-                </div>
+                <div className="date">{formatUnixTime(time)}</div>
             </div>
         </div>
     )
