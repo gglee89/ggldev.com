@@ -2,6 +2,7 @@
     "name": "ggldev.com",
     "version": "2.1.0",
     "private": true,
+    "type": "module",
     "dependencies": {
         "@babel/preset-env": "^7.22.20",
         "@babel/preset-react": "^7.22.15",
