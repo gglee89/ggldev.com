@@ -4,21 +4,20 @@ import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 import { MOVIE_PLATFORM_LINK } from './constants'
 import TopBar from './TopBar'
 import { useDraggable } from 'hooks/useDraggable'
+import { DesktopApps, useApps } from 'pages/AppsContext'
 
 interface MovieIframeProps {
-    onClose: () => void
     zIndex: number
     onFocus: () => void
 }
 
 const MovieIframe: React.FC<MovieIframeProps> = ({
-    onClose,
     zIndex,
     onFocus,
 }) => {
     const handle = useFullScreenHandle()
-
-    const { isDragging, handleMouseDown, dragStyle } = useDraggable({
+    const { state, actions } = useApps()
+    const { handleMouseDown, dragStyle } = useDraggable({
         initialPosition: { x: 0, y: 0 },
         disabled: handle.active,
         onFocus,
@@ -27,6 +26,10 @@ const MovieIframe: React.FC<MovieIframeProps> = ({
         excludeSelectors: ['.window-control'],
         initialCentered: true,
     })
+
+    if (!state.apps.includes(DesktopApps.Movie)) {
+        return null
+    }
 
     return (
         <FullScreen handle={handle}>
@@ -51,7 +54,7 @@ const MovieIframe: React.FC<MovieIframeProps> = ({
             >
                 <TopBar
                     title="https://platform.ggldev.com"
-                    closeFinder={onClose}
+                    closeFinder={() => actions.closeApp(DesktopApps.Movie)}
                     requestFullScreen={
                         handle.active ? handle.exit : handle.enter
                     }

@@ -1,26 +1,16 @@
 import React, { useRef, useState, MouseEventHandler } from 'react'
 import classnames from 'classnames'
-import { DesktopIcons as DesktopIconTypes } from './constants'
 import icons from 'shared/icons'
 import { useDraggable } from 'hooks/useDraggable'
+import { useApps, DesktopApps } from 'pages/AppsContext'
 
-interface DesktopIconsProps {
-    onAboutMeClick: () => void
-    onMovieClick: () => void
-    onStoriesWebsiteClick: () => void
-    isFinderOpen: boolean
-}
-
-const DesktopIcons: React.FC<DesktopIconsProps> = ({
-    onAboutMeClick,
-    onMovieClick,
-    onStoriesWebsiteClick,
-    isFinderOpen,
-}) => {
+const DesktopIcons: React.FC = () => {
     const iconRef = useRef<HTMLDivElement>(null)
     const moviePlatformIconRef = useRef<HTMLDivElement>(null)
     const storiesWebsiteIconRef = useRef<HTMLDivElement>(null)
-    const [selectedIcons, setSelectedIcons] = useState<string[]>([])
+    const [selectedIcons, setSelectedIcons] = useState<DesktopApps[]>([DesktopApps.Preferences])
+
+    const { state, actions } = useApps()
 
     const { isDragging, handleMouseDown, dragStyle } = useDraggable({
         initialPosition: { x: 50, y: 100 },
@@ -28,14 +18,14 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
         initialCentered: false,
     })
 
-    const handleClickIcon = (event: MouseEvent) => {
+        const handleClickIcon = (event: MouseEvent) => {
         if (
             iconRef.current &&
             !iconRef.current.contains(event.target as Node)
         ) {
             setSelectedIcons((prevSelection) =>
                 prevSelection.filter(
-                    (selection) => selection !== DesktopIconTypes.AboutMe
+                    (selection) => selection !== DesktopApps.Preferences
                 )
             )
         }
@@ -46,7 +36,7 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
         ) {
             setSelectedIcons((prevSelection) =>
                 prevSelection.filter(
-                    (selection) => selection !== DesktopIconTypes.MoviePlatform
+                    (selection) => selection !== DesktopApps.Movie
                 )
             )
         }
@@ -57,7 +47,7 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
         ) {
             setSelectedIcons((prevSelection) =>
                 prevSelection.filter(
-                    (selection) => selection !== DesktopIconTypes.StoriesWebsite
+                    (selection) => selection !== DesktopApps.StoriesWebsite
                 )
             )
         }
@@ -75,10 +65,10 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
         if (e.detail === 1) {
             setSelectedIcons((prevSelection) => [
                 ...prevSelection,
-                DesktopIconTypes.AboutMe,
+                DesktopApps.Preferences,
             ])
         } else if (e.detail === 2) {
-            onAboutMeClick()
+            actions.openApp(DesktopApps.Preferences)
         }
     }
 
@@ -87,10 +77,10 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
         if (e.detail === 1) {
             setSelectedIcons((prevSelection) => [
                 ...prevSelection,
-                DesktopIconTypes.MoviePlatform,
+                DesktopApps.Movie,
             ])
         } else if (e.detail === 2) {
-            onMovieClick()
+            actions.openApp(DesktopApps.Movie)
         }
     }
 
@@ -99,10 +89,10 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
         if (e.detail === 1) {
             setSelectedIcons((prevSelection) => [
                 ...prevSelection,
-                DesktopIconTypes.StoriesWebsite,
+                DesktopApps.StoriesWebsite,
             ])
         } else if (e.detail === 2) {
-            onStoriesWebsiteClick()
+            actions.openApp(DesktopApps.StoriesWebsite)
         }
     }
 
@@ -128,8 +118,8 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
                     className={classnames({
                         'desktop-icon': true,
                         'is-selected':
-                            isFinderOpen ||
-                            selectedIcons.includes(DesktopIconTypes.AboutMe),
+                            state.apps.includes(DesktopApps.Preferences) ||
+                            selectedIcons.includes(DesktopApps.Preferences),
                     })}
                 >
                     <img src={icons['notebook']} alt="notebook" />
@@ -145,7 +135,7 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
                     className={classnames({
                         'desktop-icon': true,
                         'is-selected': selectedIcons.includes(
-                            DesktopIconTypes.MoviePlatform
+                            DesktopApps.Movie
                         ),
                     })}
                 >
@@ -162,7 +152,7 @@ const DesktopIcons: React.FC<DesktopIconsProps> = ({
                     className={classnames({
                         'desktop-icon': true,
                         'is-selected': selectedIcons.includes(
-                            DesktopIconTypes.StoriesWebsite
+                            DesktopApps.StoriesWebsite
                         ),
                     })}
                 >

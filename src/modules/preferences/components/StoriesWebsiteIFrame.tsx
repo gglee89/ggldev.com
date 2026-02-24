@@ -4,21 +4,20 @@ import { useFullScreenHandle } from 'react-full-screen'
 import { STORIES_WEBSITE_LINK } from './constants'
 import TopBar from './TopBar'
 import { useDraggable } from 'hooks/useDraggable'
+import { DesktopApps, useApps } from 'pages/AppsContext'
 
 interface StoriesWebsiteIframeProps {
-    onClose: () => void
     zIndex: number
     onFocus: () => void
 }
 
 const StoriesWebsiteIframe: React.FC<StoriesWebsiteIframeProps> = ({
-    onClose,
     zIndex,
     onFocus,
 }) => {
     const handle = useFullScreenHandle()
-
-    const { isDragging, handleMouseDown, dragStyle } = useDraggable({
+    const { state, actions } = useApps()
+    const { handleMouseDown, dragStyle } = useDraggable({
         initialPosition: { x: 0, y: 0 },
         disabled: handle.active,
         onFocus,
@@ -27,6 +26,10 @@ const StoriesWebsiteIframe: React.FC<StoriesWebsiteIframeProps> = ({
         excludeSelectors: ['.window-control'],
         initialCentered: true,
     })
+
+    if (!state.apps.includes(DesktopApps.StoriesWebsite)) {
+        return null
+    }
 
     return (
         <div
@@ -50,7 +53,7 @@ const StoriesWebsiteIframe: React.FC<StoriesWebsiteIframeProps> = ({
         >
             <TopBar
                 title="https://stories.ggldev.com"
-                closeFinder={onClose}
+                closeFinder={() => actions.closeApp(DesktopApps.StoriesWebsite)}
                 requestFullScreen={handle.active ? handle.exit : handle.enter}
             />
             <div

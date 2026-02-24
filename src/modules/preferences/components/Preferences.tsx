@@ -20,12 +20,11 @@ import { useAppDispatch, useAppSelector } from 'store'
 import { getProjectName } from 'modules/projects/slice'
 import { getSelectedMenu, selectMenu } from 'modules/preferences/slice'
 import { MENU_ITEMS, menuOptions } from '../constants'
+import { DesktopApps, useApps } from 'pages/AppsContext'
 
 interface PreferencesProps {
     zIndex: number
     onFocus: () => void
-    isOpen: boolean
-    onClose: () => void
 }
 
 // Components (Menu Content Items)
@@ -49,16 +48,15 @@ const Posts = React.lazy(() => import('modules/posts/components/Posts'))
 
 const Preferences: React.FC<PreferencesProps> = ({
     zIndex,
-    onFocus,
-    isOpen,
-    onClose,
+    onFocus
 }) => {
     const handle = useFullScreenHandle()
     const dispatch = useAppDispatch()
     const projectName = useAppSelector(getProjectName)
     const selectedMenu = useAppSelector(getSelectedMenu)
+    const { state, actions } = useApps()
 
-    const { isDragging, haveDragged, handleMouseDown, dragStyle } = useDraggable({
+    const { handleMouseDown, dragStyle } = useDraggable({
         initialPosition: { x: 0, y: 0 },
         disabled: handle.active,
         onFocus,
@@ -71,7 +69,7 @@ const Preferences: React.FC<PreferencesProps> = ({
     const preferencesContainerClasses = classnames({
         container: true,
         'preferences-container': true,
-        'is-open': isOpen,
+        'is-open': state.apps.includes(DesktopApps.Preferences),
     })
 
     return (
@@ -92,7 +90,7 @@ const Preferences: React.FC<PreferencesProps> = ({
             >
                 <TopBar
                     title="https://ggldev.com"
-                    closeFinder={onClose}
+                    closeFinder={() => actions.closeApp(DesktopApps.Preferences)}
                     requestFullScreen={
                         handle.active ? handle.exit : handle.enter
                     }
