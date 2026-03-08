@@ -14,7 +14,6 @@ const SectionItem: React.FC<Topic> = ({
     link,
     mail,
     icon,
-    iconUrl,
     seniority,
 }) => {
     const getHref = () => {
@@ -23,57 +22,61 @@ const SectionItem: React.FC<Topic> = ({
         return '#'
     }
 
-    const getImageSrc = () => {
-        if (icon !== undefined) return icons[icon]
-        if (iconUrl !== undefined) return iconUrl
-        return ''
+    const [imageLoaded, setImageLoaded] = React.useState(typeof icon !== 'string')
+
+    if (link !== undefined || mail !== undefined) {
+        return (
+            <a
+                href={getHref()}
+                rel="noopener noreferrer"
+                target="_blank"
+                className="section-item-container"
+            >
+                {(icon !== undefined) && (
+                    <div className="section-topic__image flex items-center justify-center">
+                        <div
+                            className="section-item-skeleton flex items-center justify-center"
+                            style={{
+                                position: 'absolute',
+                                width: '100%',
+                                height: '100%',
+                                animation: 'pulse 1.5s ease-in-out infinite',
+                                borderRadius: 'inherit',
+                                opacity: imageLoaded ? 0 : 1,
+                                transition: 'opacity 0.2s ease',
+                            }}
+                        />
+                        {typeof icon === 'string' ? (
+                            <img
+                                src={icons[icon]}
+                                alt={name}
+                                style={{
+                                    opacity: imageLoaded ? 1 : 0,
+                                    transition: 'opacity 0.2s ease',
+                                }}
+                                className="absolute h-100"
+                                onLoad={() => setImageLoaded(true)}
+                            />
+                        ) : (
+                            React.createElement(icon, {
+                                className: `section-item-icon transition-opacity duration-200 h-[24px] w-[24px] [&>path]:text-white ${imageLoaded ? 'opacity-100' : 'opacity-0'}`,
+                                style: { opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.2s ease' },
+                            })
+                        )}
+                    </div>
+                )}
+                <div className="section-topic">
+                    <div>{name}</div>
+                    <div className="section-topic-item">{level}</div>
+                </div>
+            </a>
+        )
     }
 
-    const [imageLoaded, setImageLoaded] = React.useState(false)
-
-    return link !== undefined || mail !== undefined ? (
-        <a
-            href={getHref()}
-            rel="noopener noreferrer"
-            target="_blank"
-            className="section-item-container"
-        >
-            {(icon !== undefined || iconUrl !== undefined) && (
-                <div className="section-topic__image">
-                    <div
-                        className="section-item-skeleton"
-                        style={{
-                            position: 'absolute',
-                            width: '100%',
-                            height: '100%',
-                            backgroundColor: '#525050',
-                            animation: 'pulse 1.5s ease-in-out infinite',
-                            borderRadius: 'inherit',
-                            opacity: imageLoaded ? 0 : 1,
-                            transition: 'opacity 0.2s ease',
-                        }}
-                    />
-                    <img
-                        src={getImageSrc()}
-                        alt={name}
-                        className="section-item-icon"
-                        style={{
-                            opacity: imageLoaded ? 1 : 0,
-                            transition: 'opacity 0.2s ease',
-                        }}
-                        onLoad={() => setImageLoaded(true)}
-                    />
-                </div>
-            )}
-            <div className="section-topic">
-                <div>{name}</div>
-                <div className="section-topic-item">{level}</div>
-            </div>
-        </a>
-    ) : (
-        <div className="section-item-container">
-            {(icon !== undefined || iconUrl !== undefined) && (
-                <div className="section-topic__image">
+    return (
+        <div className="section-item-container ">
+            {(icon !== undefined) && (
+                <div className="section-topic__image flex items-center justify-center">
                     <div
                         className="section-item-skeleton"
                         style={{
@@ -87,16 +90,18 @@ const SectionItem: React.FC<Topic> = ({
                             transition: 'opacity 0.2s ease',
                         }}
                     />
-                    <img
-                        src={getImageSrc()}
-                        alt={name}
-                        className="section-item-icon"
-                        style={{
-                            opacity: imageLoaded ? 1 : 0,
-                            transition: 'opacity 0.2s ease',
-                        }}
-                        onLoad={() => setImageLoaded(true)}
-                    />
+                    {typeof icon === 'string' ? (
+                        <img
+                            src={icons[icon]}
+                            alt={name}
+                            className={`section-item-icon transition-opacity duration-200 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                            onLoad={() => setImageLoaded(true)}
+                        />
+                    ) : (
+                        React.createElement(icon, {
+                            className: `section-item-icon transition-opacity duration-200 h-[24px] w-[24px] ${imageLoaded ? 'opacity-100' : 'opacity-0'}`,
+                        })
+                    )}
                 </div>
             )}
             <div className="section-topic">
@@ -121,6 +126,17 @@ const Section: React.FC<SectionProps> = ({ title, topics, isDisabled }) => {
         disabled: isDisabled,
     })
 
+    const renderTopics = () => {
+        if (topics === undefined || topics.length === 0) return null
+        return (
+            <div className="section-body">
+                {topics.map((props, key) => {
+                    return <SectionItem key={key} {...props} />
+                })}
+            </div>
+        )
+    }
+
     return (
         <div className="section-container">
             <div className="section-header">
@@ -130,13 +146,8 @@ const Section: React.FC<SectionProps> = ({ title, topics, isDisabled }) => {
                     <div>+</div>
                 </div>
             </div>
-            <div className="section-body">
-                {topics !== undefined &&
-                    topics.length > 0 &&
-                    topics.map((props, key) => {
-                        return <SectionItem key={key} {...props} />
-                    })}
-            </div>
+
+            {renderTopics()}
         </div>
     )
 }

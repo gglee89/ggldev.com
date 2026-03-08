@@ -18,13 +18,15 @@ export interface Renderer {
 const ContentRenderer: React.FC = () => {
     const { selectedNews } = useNewsStore()
 
-    if (!selectedNews) return null
-
-    const { title, url, by, text } = selectedNews
-
     return (
         <div className="post-renderer-container">
-            <ContentSection title={title} by={by} url={url} text={text} />
+            {selectedNews ? (
+                <ContentSection title={selectedNews.title} by={selectedNews.by} url={selectedNews.url} text={selectedNews.text} />
+            ) : (
+                <div className="post-renderer-section">
+                    <div className="post-renderer-section-title">No news selected</div>
+                </div>
+            )}
         </div>
     )
 }

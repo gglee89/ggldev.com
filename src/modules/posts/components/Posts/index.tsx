@@ -4,7 +4,7 @@ import './posts.css'
 import ContentRenderer from './ContentRenderer'
 
 import useGetTopStories from 'services/hackernews/hooks/useGetTopStories'
-import useGetItems from 'services/hackernews/hooks/useGetItems'
+
 import { create } from 'zustand'
 import type { HackerNewsItem } from 'services/hackernews/types'
 import SideMenuGeneric from './SideMenuGeneric'
@@ -21,15 +21,14 @@ export const useNewsStore = create<NewsStore>((set) => ({
 }))
 
 const Posts: React.FC = () => {
-    const { data: topStoriesIds } = useGetTopStories()
-    const top10stories = (topStoriesIds ?? []).slice(0, 10)
-    const { data: items } = useGetItems(top10stories.map((id) => String(id)))
+    const { data: topStories, isLoading } = useGetTopStories()
+
     // Create a new sorted array to avoid mutating the original
-    const sortedItems = [...items].sort((a, b) => a.time - b.time)
+    const sortedItems = [...topStories].sort((a, b) => a.time - b.time)
 
     return (
         <div className="posts-container">
-            <SideMenuGeneric<HackerNewsItem> menuItems={sortedItems} />
+            <SideMenuGeneric<HackerNewsItem> menuItems={sortedItems} isLoading={isLoading} />
             <ContentRenderer />
         </div>
     )

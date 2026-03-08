@@ -1,5 +1,3 @@
-import React from 'react'
-
 // Styles
 import './attribution.css'
 
@@ -14,20 +12,15 @@ const Attribution = () => {
     const attributions = useAppSelector(getAttribution)
     const dataAllIds = Object.keys(attributions)
 
+    if (!dataAllIds || dataAllIds.length === 0) return null
+
     return (
         <div className="attribution-container">
-            {dataAllIds &&
-                dataAllIds.length > 0 &&
-                dataAllIds.map((dataId) => {
-                    return (
-                        <Section
-                            key={dataId}
-                            title={dataId}
-                            topics={attributions[dataId].topics}
-                            isDisabled
-                        />
-                    )
-                })}
+            {dataAllIds.map((dataId) => {
+                return (
+                    <Section key={dataId} title={dataId} topics={attributions[dataId].topics} isDisabled />
+                )
+            })}
         </div>
     )
 }

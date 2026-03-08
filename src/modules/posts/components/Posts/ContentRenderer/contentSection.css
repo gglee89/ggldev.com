@@ -1,7 +1,6 @@
 .content-renderer-section {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
 }
 
 .content-renderer-section-title {
@@ -12,9 +11,6 @@
 }
 
 .content-renderer-form {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
     gap: 8px;
     padding: 5px 0 10px 15px;
     text-align: left;

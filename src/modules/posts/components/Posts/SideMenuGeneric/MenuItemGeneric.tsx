@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import React from 'react'
+import { SiThestorygraph } from "react-icons/si";
 
 import './menuItemGeneric.css'
 
@@ -22,6 +23,7 @@ const formatUnixTime = (unixTimestamp: number): string => {
 
 interface MenuItemGenericProps {
     title: string
+    type: string
     time: number
     score: number
     isActive: boolean
@@ -30,6 +32,7 @@ interface MenuItemGenericProps {
 
 const MenuItemGeneric: React.FC<MenuItemGenericProps> = ({
     title,
+    type,
     time,
     score,
     isActive,
@@ -44,7 +47,10 @@ const MenuItemGeneric: React.FC<MenuItemGenericProps> = ({
         <div className={menuItemClasses} onClick={onClick}>
             <div className="posts-side-menu-item-left">{score}</div>
             <div className="posts-side-menu-item-post">
-                <div>{title}</div>
+                <div className="[&>svg]:inline-block">
+                    <SiThestorygraph />
+                    <span className="inline pl-1">{title}</span>
+                </div>
                 <div className="date">{formatUnixTime(time)}</div>
             </div>
         </div>
