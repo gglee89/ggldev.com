@@ -12,63 +12,42 @@ const FONT_SIZES = {
     MEDIUM: 'medium',
     LARGE: 'large',
     EXTRA_LARGE: 'extra-large',
-}
+} as const
+
+type FontSizeValue = (typeof FONT_SIZES)[keyof typeof FONT_SIZES]
 
 function Mission() {
-    const [font, setFont] = useState({ size: FONT_SIZES.SMALL })
+    const [fontSize, setFontSize] = useState<FontSizeValue>(FONT_SIZES.SMALL)
 
     const missionContainerClass = classnames({
         'mission-container': true,
-        'mission-font-size-small': font.size === FONT_SIZES.SMALL,
-        'mission-font-size-medium': font.size === FONT_SIZES.MEDIUM,
-        'mission-font-size-large': font.size === FONT_SIZES.LARGE,
-        'mission-font-size-extra-large': font.size === FONT_SIZES.EXTRA_LARGE,
+        'mission-font-size-small': fontSize === FONT_SIZES.SMALL,
+        'mission-font-size-medium': fontSize === FONT_SIZES.MEDIUM,
+        'mission-font-size-large': fontSize === FONT_SIZES.LARGE,
+        'mission-font-size-extra-large': fontSize === FONT_SIZES.EXTRA_LARGE,
     })
 
-    const missionSmall = classnames({
-        'mission-font-size-small': true,
-        active: font.size === FONT_SIZES.SMALL,
-    })
-    const missionMedium = classnames({
-        'mission-font-size-medium': true,
-        active: font.size === FONT_SIZES.MEDIUM,
-    })
-    const missionLarge = classnames({
-        'mission-font-size-large': true,
-        active: font.size === FONT_SIZES.LARGE,
-    })
-    const missionExtraLarge = classnames({
-        'mission-font-size-extra-large': true,
-        active: font.size === FONT_SIZES.EXTRA_LARGE,
-    })
+    const renderFontSizeButton = (size: FontSizeValue) => {
+        const isActive = fontSize === size
+        return (
+            <div
+                onClick={() => setFontSize(size)}
+                className={`${classnames({
+                    'mission-font-size-small': size === FONT_SIZES.SMALL,
+                    'mission-font-size-medium': size === FONT_SIZES.MEDIUM,
+                    'mission-font-size-large': size === FONT_SIZES.LARGE,
+                    'mission-font-size-extra-large': size === FONT_SIZES.EXTRA_LARGE,
+                })} flex items-center gap-2`}
+            >
+                A {isActive && <img src={icons.view} alt="eyes" />}
+            </div>
+        )
+    }
 
     return (
         <div className={missionContainerClass}>
             <div className="mission-button-container">
-                <div
-                    onClick={() => setFont({ size: FONT_SIZES.SMALL })}
-                    className={missionSmall}
-                >
-                    A
-                </div>
-                <div
-                    onClick={() => setFont({ size: FONT_SIZES.MEDIUM })}
-                    className={missionMedium}
-                >
-                    A
-                </div>
-                <div
-                    onClick={() => setFont({ size: FONT_SIZES.LARGE })}
-                    className={missionLarge}
-                >
-                    A
-                </div>
-                <div
-                    onClick={() => setFont({ size: FONT_SIZES.EXTRA_LARGE })}
-                    className={missionExtraLarge}
-                >
-                    A <img src={icons.view} alt="eyes" />
-                </div>
+                {Object.values(FONT_SIZES).map((size) => renderFontSizeButton(size as FontSizeValue))}
             </div>
             <div className="mission-item">
                 <span style={{ fontWeight: 'bold' }}>Go to the Gemba.</span>{' '}
@@ -90,9 +69,7 @@ function Mission() {
             <div className="mission-item">
                 <a
                     href="http://rmurphey.com/blog/2015/03/23/a-baseline-for-front-end-developers-2015"
-                    style={{
-                        textDecoration: 'underline',
-                    }}
+                    className="underline text-color-light-gray"
                 >
                     Rebecca Murphy&#39;s quote that resonates with many selves
                     including my own:
@@ -111,7 +88,7 @@ function Mission() {
                 my favorite book:{' '}
                 <a
                     href="https://en.wikipedia.org/wiki/The_Alchemist_(novel)"
-                    style={{ textDecoration: 'underline' }}
+                    className="underline color-white"
                 >
                     Paulo Coelho&#39;s &#34;The Alchemist&#34;
                 </a>

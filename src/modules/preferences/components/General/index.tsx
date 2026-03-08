@@ -4,7 +4,7 @@ import './general.css'
 
 const General = () => {
     return (
-        <div className="general-container">
+        <div className="general-container h-100">
             <p className="lead">About</p>
             <p className="about-text">
                 <code># giwoogustavolee @ Giwoo-MacBook-Pro in ~</code>

@@ -100,7 +100,7 @@ const DesktopIcons: React.FC = () => {
                 >
                     <img src={icons['notebook']} alt="notebook" />
                     <div>About Me</div>
-                    <div className="subtext">
+                    <div className="subtext user-select-none">
                         <div>v0.1 (ViteJS)</div>
                         <div>(AWS CloudFront)</div>
                     </div>
@@ -117,7 +117,7 @@ const DesktopIcons: React.FC = () => {
                 >
                     <img src={icons['movie']} alt="movie" />
                     <div>Movie DB</div>
-                    <div className="subtext">
+                    <div className="subtext user-select-none">
                         <div>v0.1 (ViteJS)</div>
                         <div>(AWS CloudFront)</div>
                     </div>
@@ -134,7 +134,7 @@ const DesktopIcons: React.FC = () => {
                 >
                     <img src={icons['explore']} alt="stories" />
                     <div>Stories</div>
-                    <div className="subtext">
+                    <div className="subtext user-select-none">
                         <div>v0.1 (NextJS)</div>
                         <div>(Vercel)</div>
                     </div>
