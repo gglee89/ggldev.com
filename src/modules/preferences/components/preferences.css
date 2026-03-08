@@ -97,7 +97,10 @@
     background-color: var(--dark-gray);
     border-bottom-left-radius: 7px;
     border-bottom-right-radius: 7px;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
 }
 

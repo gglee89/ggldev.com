@@ -59,10 +59,6 @@
     margin-left: 20px;
 }
 
-.header-right .time {
-    color: var(--light-gray);
-}
-
 .header-right-item {
     border-right: 1px solid var(--black);
     cursor: pointer;

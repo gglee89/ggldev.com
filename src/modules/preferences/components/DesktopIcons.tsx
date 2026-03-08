@@ -10,7 +10,7 @@ const DesktopIcons: React.FC = () => {
     const storiesWebsiteIconRef = useRef<HTMLDivElement>(null)
     const [selectedIcons, setSelectedIcons] = useState<DesktopApps[]>([DesktopApps.Preferences])
 
-    const { state, actions } = useApps()
+    const { actions } = useApps()
 
     const { isDragging, handleMouseDown, dragStyle } = useDraggable({
         initialPosition: { x: 50, y: 100 },

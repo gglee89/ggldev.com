@@ -30,12 +30,6 @@
     width: 100%;
 }
 
-.section-topic__image {
-    height: 50px;
-    position: relative;
-    width: 50px;
-}
-
 .section-topic-item {
     text-decoration: none;
 }

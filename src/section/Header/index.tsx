@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import classNames from 'classnames'
+import { FaGithub } from 'react-icons/fa'
 
 // Assets
-import icons from 'shared/icons'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import { blue } from '@mui/material/colors'
 
@@ -42,7 +42,7 @@ const Header = () => {
     })
 
     return (
-        <header className="header">
+        <header className="header text-sm">
             <nav className={navClasses}>
                 <div className="container-fluid">
                     <div className="header-left">
@@ -51,17 +51,17 @@ const Header = () => {
                         />
                         <div>Giwoo Lee</div>
                     </div>
-                    <div className="header-right">
+                    <div className="flex items-center">
                         <a
                             href="https://github.com/gglee89/gglee89.github.io"
                             rel="noopener noreferrer"
                             target="_blank"
-                            className="header-right-item"
+                            className="flex items-center gap-2 border-r-2 border-gray-300 pr-5 text-decoration-none text-gray-300 hover:text-blue-300 [&>path]:text-gray-300 hover:[&>path]:text-blue-300"
                         >
-                            <img src={icons['github']} alt="github" />
+                            <FaGithub className="h-5 w-5" />
                             <div>GitHub</div>
                         </a>
-                        <div className="time">{currentTime}</div>
+                        <div className="text-gray-300 pl-5">{currentTime}</div>
                     </div>
                 </div>
             </nav>
