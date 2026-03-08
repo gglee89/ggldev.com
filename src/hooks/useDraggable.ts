@@ -10,8 +10,6 @@ export interface UseDraggableOptions {
     initialPosition: Position
     /** Whether dragging is disabled (e.g., when fullscreen) */
     disabled?: boolean
-    /** Callback when focus is requested (e.g., bring to front) */
-    onFocus?: () => void
     /** Bounds offset from viewport edge { right, bottom } */
     bounds?: { right: number; bottom: number }
     /** CSS selector for valid drag handle (e.g., '.topbar-container') */
@@ -49,7 +47,6 @@ export interface UseDraggableReturn {
  *   initialPosition: { x: 100, y: 100 },
  *   dragHandleSelector: '.topbar-container',
  *   excludeSelectors: ['.window-control'],
- *   onFocus: () => bringToFront(),
  * })
  *
  * return (
@@ -61,7 +58,6 @@ export interface UseDraggableReturn {
 export function useDraggable({
     initialPosition,
     disabled = false,
-    onFocus,
     bounds = { right: 570, bottom: 100 },
     dragHandleSelector,
     excludeSelectors = [],
@@ -109,10 +105,9 @@ export function useDraggable({
                 y: e.clientY - (haveDragged ? position.y : currentY),
             })
 
-            onFocus?.()
             e.preventDefault()
         },
-        [disabled, dragHandleSelector, excludeSelectors, haveDragged, initialCentered, position, onFocus]
+        [disabled, dragHandleSelector, excludeSelectors, haveDragged, initialCentered, position]
     )
 
     const handleMouseMove = useCallback(

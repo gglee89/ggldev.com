@@ -18,7 +18,7 @@ const DesktopIcons: React.FC = () => {
         initialCentered: false,
     })
 
-        const handleClickIcon = (event: MouseEvent) => {
+    const handleClickIcon = (event: MouseEvent) => {
         if (
             iconRef.current &&
             !iconRef.current.contains(event.target as Node)
@@ -60,39 +60,16 @@ const DesktopIcons: React.FC = () => {
         }
     }, [])
 
-    const clickAboutMe: MouseEventHandler<HTMLDivElement> = (e) => {
+    const onClickIcon = (icon: DesktopApps): MouseEventHandler<HTMLDivElement> => (e) => {
         e.preventDefault()
         if (e.detail === 1) {
             setSelectedIcons((prevSelection) => [
                 ...prevSelection,
-                DesktopApps.Preferences,
+                icon,
             ])
         } else if (e.detail === 2) {
-            actions.openApp(DesktopApps.Preferences)
-        }
-    }
-
-    const clickMoviePlatform: MouseEventHandler<HTMLDivElement> = (e) => {
-        e.preventDefault()
-        if (e.detail === 1) {
-            setSelectedIcons((prevSelection) => [
-                ...prevSelection,
-                DesktopApps.Movie,
-            ])
-        } else if (e.detail === 2) {
-            actions.openApp(DesktopApps.Movie)
-        }
-    }
-
-    const clickStoriesWebsite: MouseEventHandler<HTMLDivElement> = (e) => {
-        e.preventDefault()
-        if (e.detail === 1) {
-            setSelectedIcons((prevSelection) => [
-                ...prevSelection,
-                DesktopApps.StoriesWebsite,
-            ])
-        } else if (e.detail === 2) {
-            actions.openApp(DesktopApps.StoriesWebsite)
+            actions.openApp(icon)
+            setSelectedIcons((prevSelection) => prevSelection.filter((selection) => selection !== icon))
         }
     }
 
@@ -114,11 +91,10 @@ const DesktopIcons: React.FC = () => {
             <div className="desktop-icon-menu">
                 <div
                     ref={iconRef}
-                    onClick={clickAboutMe}
+                    onClick={onClickIcon(DesktopApps.Preferences)}
                     className={classnames({
                         'desktop-icon': true,
                         'is-selected':
-                            state.apps.includes(DesktopApps.Preferences) ||
                             selectedIcons.includes(DesktopApps.Preferences),
                     })}
                 >
@@ -131,7 +107,7 @@ const DesktopIcons: React.FC = () => {
                 </div>
                 <div
                     ref={moviePlatformIconRef}
-                    onClick={clickMoviePlatform}
+                    onClick={onClickIcon(DesktopApps.Movie)}
                     className={classnames({
                         'desktop-icon': true,
                         'is-selected': selectedIcons.includes(
@@ -148,7 +124,7 @@ const DesktopIcons: React.FC = () => {
                 </div>
                 <div
                     ref={storiesWebsiteIconRef}
-                    onClick={clickStoriesWebsite}
+                    onClick={onClickIcon(DesktopApps.StoriesWebsite)}
                     className={classnames({
                         'desktop-icon': true,
                         'is-selected': selectedIcons.includes(

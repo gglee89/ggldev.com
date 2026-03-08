@@ -6,21 +6,12 @@ import TopBar from './TopBar'
 import { useDraggable } from 'hooks/useDraggable'
 import { DesktopApps, useApps } from 'pages/AppsContext'
 
-interface MovieIframeProps {
-    zIndex: number
-    onFocus: () => void
-}
-
-const MovieIframe: React.FC<MovieIframeProps> = ({
-    zIndex,
-    onFocus,
-}) => {
+const MovieIframe: React.FC = () => {
     const handle = useFullScreenHandle()
     const { state, actions } = useApps()
     const { handleMouseDown, dragStyle } = useDraggable({
         initialPosition: { x: 0, y: 0 },
         disabled: handle.active,
-        onFocus,
         bounds: { right: 570, bottom: 100 },
         dragHandleSelector: '.topbar-container',
         excludeSelectors: ['.window-control'],
@@ -46,11 +37,12 @@ const MovieIframe: React.FC<MovieIframeProps> = ({
                         top: '0',
                         transform: 'none',
                     }),
-                    zIndex,
+                    zIndex: state.focusedApp === DesktopApps.Movie ? 10000 : 1000,
                     display: 'flex',
                     flexDirection: 'column',
                 }}
                 onMouseDown={handleMouseDown}
+                onClick={() => actions.setFocusedApp(DesktopApps.Movie)}
             >
                 <TopBar
                     title="https://platform.ggldev.com"

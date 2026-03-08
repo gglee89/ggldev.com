@@ -6,21 +6,12 @@ import TopBar from './TopBar'
 import { useDraggable } from 'hooks/useDraggable'
 import { DesktopApps, useApps } from 'pages/AppsContext'
 
-interface StoriesWebsiteIframeProps {
-    zIndex: number
-    onFocus: () => void
-}
-
-const StoriesWebsiteIframe: React.FC<StoriesWebsiteIframeProps> = ({
-    zIndex,
-    onFocus,
-}) => {
+const StoriesWebsiteIframe: React.FC = () => {
     const handle = useFullScreenHandle()
     const { state, actions } = useApps()
     const { handleMouseDown, dragStyle } = useDraggable({
         initialPosition: { x: 0, y: 0 },
         disabled: handle.active,
-        onFocus,
         bounds: { right: 570, bottom: 100 },
         dragHandleSelector: '.topbar-container',
         excludeSelectors: ['.window-control'],
@@ -45,10 +36,11 @@ const StoriesWebsiteIframe: React.FC<StoriesWebsiteIframeProps> = ({
                     top: '0',
                     transform: 'none',
                 }),
-                zIndex,
                 display: 'flex',
                 flexDirection: 'column',
+                zIndex: state.focusedApp === DesktopApps.StoriesWebsite ? 10000 : 1000,
             }}
+            onClick={() => actions.setFocusedApp(DesktopApps.StoriesWebsite)}
             onMouseDown={handleMouseDown}
         >
             <TopBar

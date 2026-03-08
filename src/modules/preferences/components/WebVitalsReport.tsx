@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { onCLS, onFID, onLCP, onFCP, onTTFB } from 'web-vitals'
 import { useFullScreenHandle } from 'react-full-screen'
 import { useDraggable } from 'hooks/useDraggable'
+import { DesktopApps, useApps } from 'pages/AppsContext'
 
 interface Metric {
     name: string
@@ -9,24 +10,15 @@ interface Metric {
     rating: 'good' | 'needs-improvement' | 'poor'
 }
 
-interface WebVitalsReportProps {
-    zIndex: number
-    onFocus: () => void
-}
-
-const WebVitalsReport: React.FC<WebVitalsReportProps> = ({
-    zIndex,
-    onFocus,
-}) => {
+const WebVitalsReport: React.FC = () => {
     const handle = useFullScreenHandle()
     const [metrics, setMetrics] = useState<Metric[]>([])
     const [isCollapsed, setIsCollapsed] = useState(false)
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
-
+    const { actions, state } = useApps()
     const { isDragging, isDragIntent, handleMouseDown, dragStyle } = useDraggable({
         initialPosition: { x: 20, y: typeof window !== 'undefined' ? window.innerHeight - 200 : 200 },
         disabled: handle.active,
-        onFocus,
         bounds: { right: 200, bottom: 100 },
         dragHandleSelector: '.drag-handle',
         initialCentered: false,
@@ -69,10 +61,10 @@ const WebVitalsReport: React.FC<WebVitalsReportProps> = ({
                     return prev.map((m) =>
                         m.name === name
                             ? {
-                                  ...m,
-                                  value,
-                                  rating: getRating(name, value),
-                              }
+                                ...m,
+                                value,
+                                rating: getRating(name, value),
+                            }
                             : m
                     )
                 }
@@ -136,6 +128,7 @@ const WebVitalsReport: React.FC<WebVitalsReportProps> = ({
     }
 
     const handleHeaderClick = () => {
+        actions.setFocusedApp(DesktopApps.WebVitals)
         // Only toggle if it wasn't a drag operation
         if (!isDragIntent) {
             setIsCollapsed(!isCollapsed)
@@ -158,12 +151,13 @@ const WebVitalsReport: React.FC<WebVitalsReportProps> = ({
                 borderRadius: '4px',
                 padding: '0',
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-                zIndex,
                 width: '180px',
                 userSelect: 'none',
                 fontSize: '12px',
+                zIndex: state.focusedApp === DesktopApps.WebVitals ? 10000 : 1000,
             }}
             onMouseDown={handleMouseDown}
+            onClick={() => actions.setFocusedApp(DesktopApps.WebVitals)}
         >
             <div
                 className="drag-handle"

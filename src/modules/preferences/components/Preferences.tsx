@@ -22,11 +22,6 @@ import { getSelectedMenu, selectMenu } from 'modules/preferences/slice'
 import { MENU_ITEMS, menuOptions } from '../constants'
 import { DesktopApps, useApps } from 'pages/AppsContext'
 
-interface PreferencesProps {
-    zIndex: number
-    onFocus: () => void
-}
-
 // Components (Menu Content Items)
 const General = React.lazy(
     () => import('modules/preferences/components/General')
@@ -46,10 +41,7 @@ const Attribution = React.lazy(
 )
 const Posts = React.lazy(() => import('modules/posts/components/Posts'))
 
-const Preferences: React.FC<PreferencesProps> = ({
-    zIndex,
-    onFocus
-}) => {
+const Preferences: React.FC = () => {
     const handle = useFullScreenHandle()
     const dispatch = useAppDispatch()
     const projectName = useAppSelector(getProjectName)
@@ -59,7 +51,6 @@ const Preferences: React.FC<PreferencesProps> = ({
     const { handleMouseDown, dragStyle } = useDraggable({
         initialPosition: { x: 0, y: 0 },
         disabled: handle.active,
-        onFocus,
         bounds: { right: 570, bottom: 100 },
         dragHandleSelector: '.topbar-container',
         excludeSelectors: ['.window-control'],
@@ -84,9 +75,13 @@ const Preferences: React.FC<PreferencesProps> = ({
                         top: '0',
                         transform: 'none',
                     }),
-                    zIndex,
+                    zIndex: state.focusedApp === DesktopApps.Preferences ? 10000 : 1000,
                 }}
-                onMouseDown={handleMouseDown}
+                onMouseDown={(e) => {
+                    handleMouseDown(e)
+                    actions.setFocusedApp(DesktopApps.Preferences)
+                }}
+                onClick={() => actions.setFocusedApp(DesktopApps.Preferences)}
             >
                 <TopBar
                     title="https://ggldev.com"
