@@ -18,16 +18,12 @@ const StoriesWebsiteIframe: React.FC = () => {
         initialCentered: true,
     })
 
-    if (!state.apps.includes(DesktopApps.StoriesWebsite)) {
-        return null
-    }
-
     return (
         <div
             className={classnames({
                 container: true,
                 'preferences-container': true,
-                'is-open': true,
+                'is-open': state.apps.includes(DesktopApps.StoriesWebsite),
             })}
             style={{
                 ...dragStyle,

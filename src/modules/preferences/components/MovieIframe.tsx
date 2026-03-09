@@ -18,17 +18,13 @@ const MovieIframe: React.FC = () => {
         initialCentered: true,
     })
 
-    if (!state.apps.includes(DesktopApps.Movie)) {
-        return null
-    }
-
     return (
         <FullScreen handle={handle}>
             <div
                 className={classnames({
                     container: true,
                     'preferences-container': true,
-                    'is-open': true,
+                    'is-open': state.apps.includes(DesktopApps.Movie),
                 })}
                 style={{
                     ...dragStyle,

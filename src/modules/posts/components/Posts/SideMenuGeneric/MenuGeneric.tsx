@@ -15,11 +15,9 @@ const MenuGeneric = <T extends HackerNewsItem>({
 
     if (isLoading) {
         return (
-            <div className="menu">
+            <div className="flex flex-col gap-3">
                 {Array.from({ length: 10 }).map((_, index) => (
-                    <div key={index} className="menu-item-skeleton">
-                        <div className="menu-item-skeleton-title"></div>
-                    </div>
+                    <div className="animate-pulse w-full bg-gray-300 h-12" />
                 ))}
             </div>
         )

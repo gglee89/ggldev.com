@@ -1,6 +1,6 @@
-import classNames from 'classnames'
 import React from 'react'
 import { SiThestorygraph } from "react-icons/si";
+import { MdComment, MdPoll, MdWorkspaces } from "react-icons/md";
 
 import './menuItemGeneric.css'
 
@@ -38,17 +38,16 @@ const MenuItemGeneric: React.FC<MenuItemGenericProps> = ({
     isActive,
     onClick,
 }) => {
-    const menuItemClasses = classNames({
-        'posts-side-menu-item': true,
-        active: isActive,
-    })
-
     return (
-        <div className={menuItemClasses} onClick={onClick}>
-            <div className="posts-side-menu-item-left">{score}</div>
+        <div className={`${isActive ? 'bg-gray-300' : ''} flex cursor-pointer text-sm hover:bg-gray-400 py-[10px] px-[5px]`} onClick={onClick}>
+            <div className="min-w-[45px]">{score}</div>
             <div className="posts-side-menu-item-post">
                 <div className="[&>svg]:inline-block">
-                    <SiThestorygraph />
+                    {type === 'story' && <SiThestorygraph />}
+                    {type === 'job' && <MdWorkspaces />}
+                    {type === 'poll' && <MdPoll />}
+                    {type === 'pollopt' && <SiThestorygraph />}
+                    {type === 'comment' && <MdComment />}
                     <span className="inline pl-1">{title}</span>
                 </div>
                 <div className="date">{formatUnixTime(time)}</div>
