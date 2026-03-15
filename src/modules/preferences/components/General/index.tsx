@@ -8,7 +8,7 @@ const PROMPTS: Record<typeof TABS[number], string> = {
     'So far': '$ ',
 }
 
-type CommandEntry = { prompt: string; value: string }
+type CommandEntry = { id: string; prompt: string; value: string }
 
 const TerminalWindow = ({
     children,
@@ -32,16 +32,16 @@ const TerminalWindow = ({
     return (
         <div className="flex flex-1 min-h-0 w-full flex-col bg-black rounded-b-lg overflow-hidden shadow-lg border border-t-0 border-white/10">
             <div
-                className="flex flex-1 min-h-0 flex-col overflow-hidden p-4 py-3 cursor-text"
+                className="flex flex-1 min-h-0 flex-col overflow-hidden cursor-text"
                 onClick={onTerminalClick}
             >
-                <div className="flex-1 min-h-0 overflow-y-auto">
+                <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3">
                     <code className="block w-full text-left font-mono text-[0.8rem] leading-relaxed text-gray-200 whitespace-pre-wrap break-words">
                         {children}
                     </code>
-                    {commandHistory.map((cmd, i) => (
-                        <div className="flex flex-col text-left">
-                            <code key={i} className="block w-full text-left font-mono text-[0.8rem] leading-relaxed text-gray-200 whitespace-pre-wrap break-words">
+                    {commandHistory.map((cmd) => (
+                        <div key={cmd.id} className="flex flex-col text-left">
+                            <code className="block w-full text-left font-mono text-[0.8rem] leading-relaxed text-gray-200 whitespace-pre-wrap break-words">
                                 <span className="text-[var(--main-color)]">{cmd.prompt}</span>
                                 <span className="break-all">{cmd.value}</span>
                             </code>
@@ -49,10 +49,8 @@ const TerminalWindow = ({
                         </div>
                     ))}
                 </div>
-                <div className="relative flex items-center gap-0 pt-1 font-mono text-[0.8rem] leading-relaxed text-gray-200 shrink-0">
+                <div className="relative flex items-center gap-0 pt-1 px-4 py-3 font-mono text-[0.8rem] leading-relaxed text-gray-200 shrink-0">
                     <span className="text-[var(--main-color)] shrink-0 leading-[1.5]">{prompt}</span>
-                    <span className={`${inputValue.length > 0 ? 'min-w-[1ch]' : ''} break-all ml-2 leading-[1.5]`}>{inputValue}</span>
-                    <span className="inline-block w-[2px] h-[1em] shrink-0 self-center bg-[var(--main-color)] animate-pulse ml-0.5" />
                     <input
                         ref={inputRef}
                         type="text"
@@ -64,9 +62,10 @@ const TerminalWindow = ({
                                 onInputSubmit()
                             }
                         }}
-                        className="absolute inset-0 cursor-text opacity-0 w-full"
+                        className="flex-1 min-w-[1ch] bg-transparent border-none outline-none ml-2 leading-[1.5] text-gray-200 caret-[var(--main-color)] cursor-text"
                         aria-label="Terminal input"
                         autoComplete="off"
+                        autoFocus
                         autoCorrect="off"
                         autoCapitalize="off"
                         spellCheck={false}
@@ -83,9 +82,9 @@ const General = () => {
     const [commandHistoryByTab, setCommandHistoryByTab] = React.useState<
         Record<typeof TABS[number], CommandEntry[]>
     >({
-        'About': [],
-        'Currently...': [],
-        'So far': [],
+        'About': [] as CommandEntry[],
+        'Currently...': [] as CommandEntry[],
+        'So far': [] as CommandEntry[],
     })
     const inputRef = React.useRef<HTMLInputElement>(null)
 
@@ -98,7 +97,7 @@ const General = () => {
             ...prev,
             [activeTab]: [
                 ...prev[activeTab],
-                { prompt: PROMPTS[activeTab], value: inputValue },
+                { id: crypto.randomUUID(), prompt: PROMPTS[activeTab], value: inputValue },
             ],
         }))
         setInputValue('')

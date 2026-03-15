@@ -14,11 +14,10 @@
         "@mui/material": "^6.4.0",
         "@reduxjs/toolkit": "^2.5.0",
         "@tanstack/react-query": "^5.66.0",
-        "@types/jest": "^29.5.3",
-        "@types/node": "^18.17.6",
+        "@types/node": "^22.12.0",
         "@types/react": "^18.2.20",
         "@types/react-dom": "^18.2.7",
-        "@vitejs/plugin-react-swc": "^3.4.0",
+        "@vitejs/plugin-react": "^6.0.0",
         "axios": "^1.7.9",
         "ramda": "^0.26.1",
         "react": "^19.0.0",
@@ -29,9 +28,8 @@
         "react-router-dom": "^6.2.1",
         "redux": "^5.0.1",
         "uuid": "^11.0.5",
-        "vite": "^4.5.0",
-        "vite-plugin-svgr": "^4.1.0",
-        "vite-tsconfig-paths": "^4.2.1",
+        "vite": "^8.0.0",
+        "vite-plugin-svgr": "^4.5.0",
         "web-vitals": "^4.2.4",
         "zustand": "^5.0.3"
     },
@@ -39,7 +37,13 @@
         "start": "vite",
         "build": "tsc && vite build",
         "serve": "vite preview",
+        "test": "vitest",
+        "test:run": "vitest run --passWithNoTests",
+        "test:coverage": "vitest run --coverage",
         "optimize-images": "node scripts/optimize-images.js"
+    },
+    "engines": {
+        "node": ">=20.19.0"
     },
     "browserslist": [
         ">0.2%",
@@ -51,7 +55,7 @@
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
         "@trivago/prettier-plugin-sort-imports": "^6.0.2",
         "@typescript-eslint/parser": "^6.7.3",
-        "@vitest/coverage-v8": "^0.34.6",
+        "@vitest/coverage-v8": "^4.1.0",
         "autoprefixer": "^10.4.24",
         "classnames": "^2.2.6",
         "eslint": "^8.47.0",
@@ -66,6 +70,6 @@
         "tailwindcss": "^3.4.14",
         "typescript": "^5.7.3",
         "typescript-module-alias": "^2.2.9",
-        "vitest": "^0.34.6"
+        "vitest": "^4.1.0"
     }
 }

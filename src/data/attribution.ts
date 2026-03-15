@@ -1,5 +1,3 @@
-import { FaAws, FaGithub, FaNodeJs, FaReact } from 'react-icons/fa'
-import { SiApollographql, SiGraphql, SiFreepik, SiMongodb } from "react-icons/si";
 import type { Topic } from 'modules/types'
 
 const attributions: Record<string, { topics: Topic[] }> = {
@@ -9,44 +7,43 @@ const attributions: Record<string, { topics: Topic[] }> = {
                 name: 'ReactJS',
                 link: 'https://reactjs.org',
                 level: 'https://reactjs.org',
-                icon: FaReact
-                    
+                icon: 'react',
             },
             {
                 name: 'GraphQL',
                 link: 'https://graphql.org',
                 level: 'https://graphql.org',
-                icon: SiGraphql,
+                icon: 'graphQL',
             },
             {
                 name: 'Apollo Client',
                 link: 'https://www.apollographql.com/',
                 level: 'https://www.apollographql.com/',
-                icon: SiApollographql,
+                icon: 'apolloClient',
             },
             {
                 name: 'NodeJS',
                 link: 'https://nodejs.org',
                 level: 'https://nodejs.org',
-                icon: FaNodeJs,
+                icon: 'nodeJS',
             },
             {
                 name: 'MongoDB',
                 link: 'https://mongodb.com',
                 level: 'https://mongodb.com',
-                icon: SiMongodb,
+                icon: 'mongoDB',
             },
             {
                 name: 'Github Pages',
                 link: 'https://pages.github.com',
                 level: 'https://pages.github.com',
-                icon: FaGithub,
+                icon: 'github',
             },
             {
                 name: 'AWS',
                 link: 'https://aws.amazon.com',
                 level: 'https://aws.amazon.com',
-                icon: FaAws,
+                icon: 'aws',
             },
         ],
     },
@@ -56,31 +53,31 @@ const attributions: Record<string, { topics: Topic[] }> = {
                 name: 'Background photo - Created by ydlabs',
                 link: 'https://freepik.com/ydlabs',
                 level: 'https://freepik.com/ydlabs',
-                icon: SiFreepik,
+                icon: 'freepik',
             },
             {
                 name: 'Background photo - Created by Danmir12',
                 link: 'https://www.freepik.com/danmir12',
                 level: 'https://www.freepik.com/danmir12',
-                icon: SiFreepik,
+                icon: 'freepik',
             },
             {
                 name: 'Background photo - Created by Starline',
                 link: 'https://www.freepik.com/starline',
                 level: 'https://www.freepik.com/starline',
-                icon: SiFreepik,
+                icon: 'freepik',
             },
             {
                 name: 'Background photo - Created by Lifeforstock',
                 link: 'https://www.freepik.com/lifeforstock',
                 level: 'https://www.freepik.com/lifeforstock',
-                icon: SiFreepik,
+                icon: 'freepik',
             },
             {
                 name: 'Background photo - Created by Photoangel',
                 link: 'https://www.freepik.com/photoangel',
                 level: 'https://www.freepik.com/photoangel',
-                icon: SiFreepik,
+                icon: 'freepik',
             },
         ],
     },

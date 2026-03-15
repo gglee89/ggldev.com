@@ -1,8 +1,5 @@
 import React from 'react'
 
-// Styles
-import './contact.css'
-
 // Components
 import Section from 'modules/section/components/Section'
 import { useAppSelector } from 'store'
@@ -13,7 +10,7 @@ const Contact = () => {
     const dataAllIds = Object.keys(contacts)
 
     return (
-        <div className="contact-container">
+        <div className="px-4 py-3">
             {dataAllIds &&
                 dataAllIds.length > 0 &&
                 dataAllIds.map((dataId) => {

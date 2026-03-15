@@ -142,14 +142,13 @@ const WebVitalsReport: React.FC = () => {
             style={{
                 ...dragStyle,
                 ...(handle.active && {
-                    left: 'auto',
                     top: 'auto',
-                    right: '20px',
-                    bottom: '20px',
+                    right: '0px',
+                    bottom: '0px',
                 }),
                 backgroundColor: '#1a1a1a',
                 borderRadius: '4px',
-                padding: '0',
+                padding: '0px',
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
                 width: '180px',
                 userSelect: 'none',
