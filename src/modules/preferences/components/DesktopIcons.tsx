@@ -8,6 +8,7 @@ const DesktopIcons: React.FC = () => {
     const iconRef = useRef<HTMLDivElement>(null)
     const moviePlatformIconRef = useRef<HTMLDivElement>(null)
     const storiesWebsiteIconRef = useRef<HTMLDivElement>(null)
+    const uiInternalsIconRef = useRef<HTMLDivElement>(null)
     const [selectedIcons, setSelectedIcons] = useState<DesktopApps[]>([DesktopApps.Preferences])
 
     const { actions } = useApps()
@@ -48,6 +49,17 @@ const DesktopIcons: React.FC = () => {
             setSelectedIcons((prevSelection) =>
                 prevSelection.filter(
                     (selection) => selection !== DesktopApps.StoriesWebsite
+                )
+            )
+        }
+
+        if (
+            uiInternalsIconRef.current &&
+            !uiInternalsIconRef.current.contains(event.target as Node)
+        ) {
+            setSelectedIcons((prevSelection) =>
+                prevSelection.filter(
+                    (selection) => selection !== DesktopApps.UiInternals
                 )
             )
         }
@@ -137,6 +149,23 @@ const DesktopIcons: React.FC = () => {
                     <div className="subtext user-select-none">
                         <div>v0.1 (NextJS)</div>
                         <div>(Vercel)</div>
+                    </div>
+                </div>
+                <div
+                    ref={uiInternalsIconRef}
+                    onClick={onClickIcon(DesktopApps.UiInternals)}
+                    className={classnames({
+                        'desktop-icon': true,
+                        'is-selected': selectedIcons.includes(
+                            DesktopApps.UiInternals
+                        ),
+                    })}
+                >
+                    <img src={icons['computer']} alt="UI internals" />
+                    <div>UI internals</div>
+                    <div className="subtext user-select-none">
+                        <div>Event loop model</div>
+                        <div>(pedagogical)</div>
                     </div>
                 </div>
             </div>

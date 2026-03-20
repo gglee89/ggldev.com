@@ -5,6 +5,7 @@ export enum DesktopApps {
     Movie,
     StoriesWebsite,
     WebVitals,
+    UiInternals,
 }
 
 interface AppsContextProps {
@@ -38,7 +39,7 @@ export const AppsProvider = ({ children }: { children: React.ReactNode }) => {
     const [focusedApp, setFocusedApp] = useState<DesktopApps | null>(null)
 
     const openApp = (app: DesktopApps) => {
-        setApps([...apps, app])
+        setApps((prev) => (prev.includes(app) ? prev : [...prev, app]))
         setFocusedApp(app)
     }
 

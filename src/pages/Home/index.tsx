@@ -6,6 +6,7 @@ import './home.css'
 import Preferences from 'modules/preferences/components/Preferences'
 import WebVitalsReport from 'modules/preferences/components/WebVitalsReport'
 import DesktopIcons from 'modules/preferences/components/DesktopIcons'
+import UiInternalsWindow from 'modules/ui-internals/UiInternalsWindow'
 
 // Components
 import Layout from 'pages/layout'
@@ -22,6 +23,7 @@ const Home = () => {
                 <Preferences />
                 <MovieIframe />
                 <StoriesWebsiteIFrame />
+                <UiInternalsWindow />
                 <WebVitalsReport />
             </Layout>
         </AppsProvider>
