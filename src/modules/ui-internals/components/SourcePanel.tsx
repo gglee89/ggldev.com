@@ -1,78 +1,89 @@
-import { Box, Paper, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import React from 'react'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+
+import { chromeDark } from '../chromeTheme'
+
+import { ChromeMechanismPanel } from './ChromeMechanismPanel'
 
 type SourcePanelProps = {
     lines: string[]
     highlightLines: Set<number>
+    blink?: boolean
 }
 
-const lineNumberWidth = 36
+export const SourcePanel = ({ lines, highlightLines, blink }: SourcePanelProps) => {
+    const code = lines.join('\n')
 
-export const SourcePanel = ({ lines, highlightLines }: SourcePanelProps) => {
     return (
-        <Paper
-            elevation={0}
-            sx={{
-                p: 2,
-                height: '100%',
-                bgcolor: 'rgba(15, 23, 42, 0.85)',
-                border: '1px solid rgba(148, 163, 184, 0.25)',
-                overflow: 'auto',
-            }}
-        >
-            <Typography variant="subtitle2" sx={{ mb: 1, color: 'grey.400' }}>
-                Source
-            </Typography>
+        <ChromeMechanismPanel title="Sources" badge="app.js" blink={blink} flexFill>
             <Box
-                component="pre"
                 sx={{
-                    m: 0,
-                    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-                    fontSize: '0.75rem',
-                    lineHeight: 1.5,
-                    color: 'grey.100',
+                    flex: 1,
+                    minHeight: 0,
+                    height: 0,
+                    minWidth: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    borderRadius: '4px',
+                    border: `1px solid ${chromeDark.border}`,
+                    overflowY: 'auto',
+                    overflowX: 'auto',
+                    scrollbarGutter: 'stable',
+                    WebkitOverflowScrolling: 'touch',
+                    '& pre': { margin: '0 !important' },
                 }}
             >
-                {lines.map((line, i) => {
-                    const n = i + 1
-                    const on = highlightLines.has(n)
-                    return (
-                        <Box
-                            key={n}
-                            sx={{
-                                display: 'flex',
-                                minHeight: '1.5em',
-                                bgcolor: on ? 'rgba(59, 130, 246, 0.25)' : 'transparent',
-                                borderLeft: on ? '3px solid' : '3px solid transparent',
-                                borderColor: on ? 'primary.main' : 'transparent',
-                            }}
-                        >
-                            <Typography
-                                component="span"
-                                sx={{
-                                    width: lineNumberWidth,
-                                    flexShrink: 0,
-                                    color: 'grey.600',
-                                    userSelect: 'none',
-                                    textAlign: 'right',
-                                    pr: 1,
-                                }}
-                            >
-                                {n}
-                            </Typography>
-                            <Typography
-                                component="span"
-                                sx={{
-                                    whiteSpace: 'pre',
-                                    color: on ? 'grey.50' : 'grey.300',
-                                }}
-                            >
-                                {line || ' '}
-                            </Typography>
-                        </Box>
-                    )
-                })}
+                <SyntaxHighlighter
+                    language="javascript"
+                    style={vscDarkPlus}
+                    showLineNumbers
+                    showInlineLineNumbers={false}
+                    startingLineNumber={1}
+                    wrapLines
+                    wrapLongLines
+                    lineNumberStyle={{
+                        minWidth: '2.75em',
+                        paddingRight: '1em',
+                        color: chromeDark.textMuted,
+                        fontSize: '12px',
+                        fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                        userSelect: 'none',
+                        borderRight: `1px solid ${chromeDark.borderSubtle}`,
+                        marginRight: '0.75em',
+                    }}
+                    lineProps={(lineNumber) => ({
+                        style: {
+                            display: 'block',
+                            fontSize: '12px',
+                            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                            ...(highlightLines.has(lineNumber)
+                                ? {
+                                      backgroundColor: chromeDark.lineHighlight,
+                                      boxShadow: `inset 3px 0 0 0 ${chromeDark.accent}`,
+                                  }
+                                : {}),
+                        },
+                    })}
+                    codeTagProps={{
+                        style: {
+                            fontSize: '12px',
+                            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                        },
+                    }}
+                    customStyle={{
+                        margin: 0,
+                        padding: '12px 12px 12px 0',
+                        fontSize: '12px',
+                        lineHeight: 1.5,
+                        background: chromeDark.sourceBg,
+                        borderRadius: 0,
+                    }}
+                >
+                    {code}
+                </SyntaxHighlighter>
             </Box>
-        </Paper>
+        </ChromeMechanismPanel>
     )
 }

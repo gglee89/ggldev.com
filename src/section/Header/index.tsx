@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import classNames from 'classnames'
-import { Link } from 'react-router-dom'
 import { FaGithub } from 'react-icons/fa'
 
 // Assets
@@ -53,12 +52,6 @@ const Header = () => {
                         <div>Giwoo Lee</div>
                     </div>
                     <div className="flex items-center">
-                        <Link
-                            to="/ui-internals"
-                            className="mr-4 border-r-2 border-gray-300 pr-5 text-decoration-none text-gray-300 hover:text-blue-300"
-                        >
-                            UI internals
-                        </Link>
                         <a
                             href="https://github.com/gglee89/gglee89.github.io"
                             rel="noopener noreferrer"

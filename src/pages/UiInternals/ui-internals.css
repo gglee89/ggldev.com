@@ -1,7 +1,0 @@
-/* Allow this page to scroll inside the site shell (root uses overflow: hidden). */
-.ui-internals-root {
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: 100vh;
-    box-sizing: border-box;
-}

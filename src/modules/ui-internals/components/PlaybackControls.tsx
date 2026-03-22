@@ -1,11 +1,28 @@
 import PauseIcon from '@mui/icons-material/Pause'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import RestartAltIcon from '@mui/icons-material/RestartAlt'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
-import { Box, Button, Paper, Slider, Stack, Typography } from '@mui/material'
+import { Box, IconButton, Slider, Stack, Tooltip, Typography } from '@mui/material'
 import React, { useEffect } from 'react'
 
+import { chromeDark } from '../chromeTheme'
 import { usePlaybackStore } from '../playbackStore'
+
+import { ChromeMechanismPanel } from './ChromeMechanismPanel'
+
+const iconBtnSx = {
+    border: `1px solid ${chromeDark.border}`,
+    color: chromeDark.textPrimary,
+    '&:hover': { bgcolor: 'rgba(255,255,255,0.06)' },
+    '&.Mui-disabled': { borderColor: chromeDark.borderSubtle, color: chromeDark.textMuted },
+}
+
+const primaryIconSx = {
+    bgcolor: chromeDark.accent,
+    color: '#202124',
+    '&:hover': { bgcolor: '#a8c7fa' },
+}
 
 export const PlaybackControls = () => {
     const scenario = usePlaybackStore((s) => s.scenario)
@@ -41,51 +58,56 @@ export const PlaybackControls = () => {
     if (!scenario) return null
 
     return (
-        <Paper
-            elevation={0}
-            sx={{
-                p: 2,
-                bgcolor: 'rgba(15, 23, 42, 0.85)',
-                border: '1px solid rgba(148, 163, 184, 0.25)',
-            }}
-        >
+        <ChromeMechanismPanel title="Playback" badge="Controls" collapsible={false}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'center' }}>
-                <Stack direction="row" spacing={1} flexWrap="wrap">
-                    <Button
-                        size="small"
-                        variant="outlined"
-                        startIcon={<SkipPreviousIcon />}
-                        onClick={prev}
-                        disabled={frameIndex <= 0}
-                    >
-                        Back
-                    </Button>
-                    <Button
-                        size="small"
-                        variant="contained"
-                        startIcon={isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
-                        onClick={() => {
-                            if (atEnd) reset()
-                            togglePlay()
-                        }}
-                    >
-                        {isPlaying ? 'Pause' : atEnd ? 'Replay' : 'Play'}
-                    </Button>
-                    <Button
-                        size="small"
-                        variant="outlined"
-                        endIcon={<SkipNextIcon />}
-                        onClick={next}
-                        disabled={atEnd}
-                    >
-                        Next
-                    </Button>
-                    <Button size="small" onClick={reset}>
-                        Reset
-                    </Button>
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                    <Tooltip title="Previous step">
+                        <span>
+                            <IconButton
+                                size="small"
+                                aria-label="Previous step"
+                                onClick={prev}
+                                disabled={frameIndex <= 0}
+                                sx={iconBtnSx}
+                            >
+                                <SkipPreviousIcon fontSize="small" />
+                            </IconButton>
+                        </span>
+                    </Tooltip>
+                    <Tooltip title={isPlaying ? 'Pause' : atEnd ? 'Replay' : 'Play'}>
+                        <IconButton
+                            size="small"
+                            aria-label={isPlaying ? 'Pause' : atEnd ? 'Replay' : 'Play'}
+                            onClick={() => {
+                                if (atEnd) reset()
+                                togglePlay()
+                            }}
+                            sx={{ ...primaryIconSx, px: 1 }}
+                        >
+                            {isPlaying ? <PauseIcon fontSize="small" /> : <PlayArrowIcon fontSize="small" />}
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Next step">
+                        <span>
+                            <IconButton
+                                size="small"
+                                aria-label="Next step"
+                                onClick={next}
+                                disabled={atEnd}
+                                sx={iconBtnSx}
+                            >
+                                <SkipNextIcon fontSize="small" />
+                            </IconButton>
+                        </span>
+                    </Tooltip>
+                    <Tooltip title="Reset">
+                        <IconButton size="small" aria-label="Reset" onClick={reset} sx={iconBtnSx}>
+                            <RestartAltIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
                 </Stack>
                 <Box sx={{ flex: 1, minWidth: 160 }}>
-                    <Typography variant="caption" color="grey.500">
+                    <Typography variant="caption" sx={{ color: chromeDark.textMuted }}>
                         Step {frameIndex + 1} / {total}
                     </Typography>
                     <Slider
@@ -97,10 +119,11 @@ export const PlaybackControls = () => {
                         onChange={(_, v) =>
                             usePlaybackStore.getState().setFrameIndex(v as number)
                         }
+                        sx={{ color: chromeDark.accent }}
                     />
                 </Box>
                 <Box sx={{ minWidth: 140 }}>
-                    <Typography variant="caption" color="grey.500">
+                    <Typography variant="caption" sx={{ color: chromeDark.textMuted }}>
                         Auto-advance (ms)
                     </Typography>
                     <Slider
@@ -110,9 +133,10 @@ export const PlaybackControls = () => {
                         max={3000}
                         step={100}
                         onChange={(_, v) => setStepMs(v as number)}
+                        sx={{ color: chromeDark.accent }}
                     />
                 </Box>
             </Stack>
-        </Paper>
+        </ChromeMechanismPanel>
     )
 }

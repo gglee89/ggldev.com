@@ -31,6 +31,26 @@ export type DomSnapshot = {
     nodes: DomNodeView[]
 }
 
+/** Pedagogical “C++ side” — WebCore / browser DOM implementation (course blackboard model). */
+export type CppDomSnapshot = {
+    /** Monospace lines, e.g. WebCore::Node tree */
+    lines: string[]
+}
+
+/** Engine / allocator view — V8 slots, backing stores, etc. (pedagogical). */
+export type CppMemorySnapshot = {
+    lines: string[]
+}
+
+/** Mini “browser output” matching JS state for the step. */
+export type RenderedPreview = {
+    /** body has no element children yet */
+    bodyEmpty: boolean
+    inputValue: string
+    greeting: string
+    footer: string
+}
+
 export type Frame = {
     caption: string
     highlightLines: number[]
@@ -40,6 +60,12 @@ export type Frame = {
     taskQueue: TaskQueueItem[]
     microtaskQueue: TaskQueueItem[]
     dom: DomSnapshot
+    /** C++ DOM (WebCore) representation */
+    cppDom: CppDomSnapshot
+    /** Memory allocation narrative (V8 + bridge) */
+    cppMemory: CppMemorySnapshot
+    /** What the user would see in the page for this step */
+    renderedPreview: RenderedPreview
 }
 
 export type Scenario = {

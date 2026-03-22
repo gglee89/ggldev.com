@@ -9,6 +9,8 @@ import { DesktopApps, useApps } from 'pages/AppsContext'
 import UiInternalsContent from './UiInternalsContent'
 
 import 'modules/preferences/components/preferences.css'
+import './ui-internals-chrome.css'
+import { chromeDark } from './chromeTheme'
 
 const UiInternalsWindow: React.FC = () => {
     const handle = useFullScreenHandle()
@@ -53,13 +55,20 @@ const UiInternalsWindow: React.FC = () => {
                     requestFullScreen={handle.active ? handle.exit : handle.enter}
                 />
                 <div
-                    className="preferences-menu"
+                    className="preferences-menu ui-internals-window-scroll"
                     style={{
                         flex: 1,
+                        backgroundColor: chromeDark.shell,
                         minHeight: 0,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        overflow: 'hidden',
+                        overflowY: 'auto',
+                        overflowX: 'hidden',
+                        scrollbarGutter: 'stable',
+                        WebkitOverflowScrolling: 'touch',
+                        paddingTop: 8,
+                        paddingBottom: 12,
+                        paddingLeft: 12,
+                        paddingRight: 12,
+                        boxSizing: 'border-box',
                     }}
                 >
                     <UiInternalsContent compact />

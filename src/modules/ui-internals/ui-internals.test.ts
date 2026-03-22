@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { getChangedMechanisms } from './frameDiff'
 import { clampFrameIndex, usePlaybackStore } from './playbackStore'
 import { vdomIntervalScenario } from './scenarios/vdom-interval'
 
@@ -19,6 +20,22 @@ describe('vdomIntervalScenario', () => {
         expect(keys).toContain('name')
         expect(keys).toContain('vDOM')
         expect(keys).toContain('elems')
+    })
+})
+
+describe('getChangedMechanisms', () => {
+    it('returns empty set when there is no previous frame', () => {
+        const first = vdomIntervalScenario.frames[0]
+        expect([...getChangedMechanisms(undefined, first)]).toEqual([])
+    })
+
+    it('detects when heap content changes between steps', () => {
+        const a = vdomIntervalScenario.frames[0]
+        const b = vdomIntervalScenario.frames[1]
+        expect(getChangedMechanisms(a, b).has('heap')).toBe(false)
+        const heapChange = vdomIntervalScenario.frames[4]
+        const next = vdomIntervalScenario.frames[5]
+        expect(getChangedMechanisms(heapChange, next).has('heap')).toBe(true)
     })
 })
 
