@@ -1,33 +1,38 @@
+import { useEffect, useRef } from 'react'
+
 import MenuItemGeneric from './MenuItemGeneric'
-import type { HackerNewsItem } from 'services/hackernews/types'
 import { useNewsStore } from '..'
+import useGetTopStories from 'services/hackernews/hooks/useGetTopStories'
 
-interface MenuGeneric<T> {
-    menuItems: T[]
-    isLoading: boolean
-}
+const MenuGeneric = () => {
+    const loaderRef = useRef<HTMLDivElement>(null)
+    const { selectedNews, setSelectedNews, limit, increaseLimit } = useNewsStore()
+    const { data: topStories, isLoading } = useGetTopStories({ limit })
 
-const MenuGeneric = <T extends HackerNewsItem>({
-    menuItems,
-    isLoading,
-}: MenuGeneric<T>) => {
-    const { selectedNews, setSelectedNews } = useNewsStore()
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !isLoading) {
+                increaseLimit()
+            }
+        }, {
+            threshold: 0.1,
+        })
 
-    if (isLoading) {
-        return (
-            <div className="flex flex-col gap-3">
-                {Array.from({ length: 10 }).map((_, index) => (
-                    <div className="animate-pulse w-full bg-gray-300 h-12" />
-                ))}
-            </div>
-        )
-    }
+        if (loaderRef.current) {
+            observer.observe(loaderRef.current)
+        }
+
+        return () => observer.disconnect()
+    }, [isLoading])
+
+    // Create a new sorted array to avoid mutating the original
+    const sortedItems = [...topStories].sort((a, b) => a.time - b.time)
 
     return (
         <div className="menu">
-            {menuItems &&
-                menuItems.length > 0 &&
-                menuItems.map((menuItem) => {
+            {sortedItems &&
+                sortedItems.length > 0 &&
+                sortedItems.map((menuItem) => {
                     return (
                         <MenuItemGeneric
                             key={menuItem.id}
@@ -40,6 +45,9 @@ const MenuGeneric = <T extends HackerNewsItem>({
                         />
                     )
                 })}
+            <div ref={loaderRef}>
+                {isLoading ? "Loading..." : 'Scroll for more'}
+            </div>
         </div>
     )
 }

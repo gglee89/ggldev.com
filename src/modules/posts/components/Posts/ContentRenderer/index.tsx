@@ -1,5 +1,3 @@
-import React from 'react'
-
 import './contentRenderer.css'
 
 // Components
@@ -15,7 +13,7 @@ export interface Renderer {
     renderedImage: string
 }
 
-const ContentRenderer: React.FC = () => {
+const ContentRenderer = () => {
     const { selectedNews } = useNewsStore()
 
     return (

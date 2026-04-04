@@ -1,18 +1,19 @@
 import { useQuery } from '@tanstack/react-query'
-import { HackerNewsQueryKeys } from '../queryKeys'
-import { getTopStories } from 'services/hackernews'
 
+import { getTopStories } from 'services/hackernews'
 import useGetItems from 'services/hackernews/hooks/useGetItems'
 
-const useGetTopStories = () => {
+import { HackerNewsQueryKeys } from '../queryKeys'
+
+const useGetTopStories = ({ limit = 10 }: { limit?: number } = {}) => {
     const query = useQuery({
         queryKey: HackerNewsQueryKeys.GetTopStories(),
         queryFn: ({ signal }) => getTopStories(signal),
     })
 
-    const top10stories = query.data?.slice(0, 10)
+    const topStories = query.data?.slice(0, limit)
 
-    return useGetItems(top10stories?.map((id) => String(id)) ?? [])
+    return useGetItems(topStories?.map((id) => String(id)) ?? [])
 }
 
 export default useGetTopStories
